@@ -71,15 +71,13 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            widget.categoryId == null
-                ? 'Monthly budget saved.'
-                : 'Category budget saved.',
-          ),
-        ),
-      );
+      final message = widget.categoryId == null
+          ? 'Monthly budget cleared.'
+          : 'Budget cleared.';
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
 
       Navigator.of(context).pop();
     } catch (e) {
@@ -121,6 +119,8 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
     );
 
     if (confirmed != true) return;
+
+    if (!mounted) return;
 
     setState(() {
       _saving = true;

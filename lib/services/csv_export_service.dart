@@ -8,8 +8,7 @@ import '../data/local/enums.dart';
 import '../data/models/transaction_filter.dart';
 
 class CsvExportService {
-  CsvExportService(this._db, {required String Function() userId})
-    : _userId = userId;
+  CsvExportService(this._db, {required this._userId});
 
   final AppDatabase _db;
   final String Function() _userId;

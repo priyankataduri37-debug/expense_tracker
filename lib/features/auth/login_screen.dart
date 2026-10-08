@@ -115,8 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty)
+                        if (v == null || v.isEmpty) {
                           return 'Enter your password';
+                        }
                         if (_isSignUp && v.length < 6) {
                           return 'At least 6 characters';
                         }

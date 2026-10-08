@@ -16,10 +16,9 @@ class TransactionTotals {
 class TransactionRepository {
   TransactionRepository(
     this._db, {
-    required String Function() userId,
+    required this._userId,
     DateTime Function()? clock,
-  }) : _userId = userId,
-       _clock = clock ?? DateTime.now;
+  }) : _clock = clock ?? DateTime.now;
 
   final AppDatabase _db;
   final String Function() _userId;
@@ -52,8 +51,9 @@ class TransactionRepository {
     if (f.type != null) cond = cond & t.type.equalsValue(f.type!);
     if (f.categoryId != null) cond = cond & t.categoryId.equals(f.categoryId!);
     if (f.accountId != null) cond = cond & t.accountId.equals(f.accountId!);
-    if (f.from != null)
+    if (f.from != null) {
       cond = cond & t.occurredAt.isBiggerOrEqualValue(f.from!);
+    }
     if (f.to != null) cond = cond & t.occurredAt.isSmallerThanValue(f.to!);
     if (f.minMinor != null) {
       cond = cond & t.amountMinor.isBiggerOrEqualValue(f.minMinor!);

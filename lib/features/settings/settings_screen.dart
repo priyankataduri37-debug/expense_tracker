@@ -96,6 +96,7 @@ class SettingsScreen extends StatelessWidget {
     );
 
     if (confirmed != true) return;
+    if (!context.mounted) return;
 
     try {
       final backup = context.read<BackupService>();
@@ -208,6 +209,8 @@ class SettingsScreen extends StatelessWidget {
     );
 
     if (confirmed != true) return;
+
+    if (!context.mounted) return;
 
     try {
       await context.read<LocalDataResetService>().resetForUser(uid);

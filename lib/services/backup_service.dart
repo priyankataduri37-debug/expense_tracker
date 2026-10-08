@@ -8,12 +8,7 @@ import '../data/local/enums.dart';
 import '../data/repositories/sync_meta_repository.dart';
 
 class BackupService {
-  BackupService(
-    this._db, {
-    required String Function() userId,
-    required SyncMetaRepository syncMeta,
-  }) : _userId = userId,
-       _syncMeta = syncMeta;
+  BackupService(this._db, {required this._userId, required this._syncMeta});
 
   final AppDatabase _db;
   final String Function() _userId;

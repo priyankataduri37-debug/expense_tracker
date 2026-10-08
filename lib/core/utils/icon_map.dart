@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Maps the `iconKey` strings stored in the database to real icons.
 const _icons = <String, IconData>{
   'restaurant': Icons.restaurant,
   'flight': Icons.flight,

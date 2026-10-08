@@ -7,10 +7,9 @@ import '../local/enums.dart';
 class BudgetRepository {
   BudgetRepository(
     this._db, {
-    required String Function() userId,
+    required this._userId,
     DateTime Function()? clock,
-  }) : _userId = userId,
-       _clock = clock ?? DateTime.now;
+  }) : _clock = clock ?? DateTime.now;
 
   final AppDatabase _db;
   final String Function() _userId;
