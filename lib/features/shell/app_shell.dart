@@ -23,7 +23,12 @@ class _AppShellState extends State<AppShell> {
     SettingsScreen(),
   ];
 
-  Widget _navItem(int index, IconData icon, IconData selectedIcon, String label) {
+  Widget _navItem(
+    int index,
+    IconData icon,
+    IconData selectedIcon,
+    String label,
+  ) {
     final selected = _index == index;
     final color = selected ? Theme.of(context).colorScheme.primary : null;
     return InkWell(
@@ -35,11 +40,12 @@ class _AppShellState extends State<AppShell> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(selected ? selectedIcon : icon, color: color),
-            Text(label,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall
-                    ?.copyWith(color: color)),
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: color),
+            ),
           ],
         ),
       ),
@@ -64,7 +70,12 @@ class _AppShellState extends State<AppShell> {
             _navItem(0, Icons.dashboard_outlined, Icons.dashboard, 'Home'),
             _navItem(1, Icons.pie_chart_outline, Icons.pie_chart, 'Analytics'),
             const SizedBox(width: 56), // room for the + button
-            _navItem(2, Icons.receipt_long_outlined, Icons.receipt_long, 'History'),
+            _navItem(
+              2,
+              Icons.receipt_long_outlined,
+              Icons.receipt_long,
+              'History',
+            ),
             _navItem(3, Icons.settings_outlined, Icons.settings, 'Settings'),
           ],
         ),

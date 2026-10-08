@@ -30,8 +30,7 @@ void main() {
     expect(await repo.pendingRows(), hasLength(1));
 
     final row = (await repo.pendingRows()).single;
-    await repo.markSynced(id,
-        expectedUpdatedAt: row.updatedAt, baseJson: '{}');
+    await repo.markSynced(id, expectedUpdatedAt: row.updatedAt, baseJson: '{}');
     expect(await repo.pendingRows(), isEmpty);
   });
 
@@ -42,8 +41,11 @@ void main() {
     now = now.add(const Duration(seconds: 5));
     await repo.update(id, note: 'edited while uploading');
 
-    final applied = await repo.markSynced(id,
-        expectedUpdatedAt: uploaded.updatedAt, baseJson: '{"v":1}');
+    final applied = await repo.markSynced(
+      id,
+      expectedUpdatedAt: uploaded.updatedAt,
+      baseJson: '{"v":1}',
+    );
 
     expect(applied, isFalse);
     final row = (await repo.pendingRows()).single;

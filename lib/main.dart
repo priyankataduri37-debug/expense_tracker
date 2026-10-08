@@ -48,10 +48,7 @@ Future<void> main() async {
 
   final syncMeta = SyncMetaRepository(db);
 
-  final localDataResetService = LocalDataResetService(
-    db,
-    syncMeta: syncMeta,
-  );
+  final localDataResetService = LocalDataResetService(db, syncMeta: syncMeta);
 
   final syncService = SyncService(
     repo,
@@ -91,9 +88,7 @@ Future<void> main() async {
         Provider<BudgetRepository>.value(value: budgetRepo),
         Provider<BackupService>.value(value: backupService),
         Provider<CsvExportService>.value(value: csvExportService),
-        Provider<LocalDataResetService>.value(
-          value: localDataResetService,
-        ),
+        Provider<LocalDataResetService>.value(value: localDataResetService),
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider(
           create: (_) => CategoryProvider(CategoryRepository(db)),

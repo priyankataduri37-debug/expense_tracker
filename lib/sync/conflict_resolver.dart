@@ -60,11 +60,11 @@ MergeResult mergeTransaction({
 }
 
 dynamic _lastWriteWins(
-    dynamic l,
-    dynamic r,
-    Map<String, dynamic> local,
-    Map<String, dynamic> remote,
-    ) {
+  dynamic l,
+  dynamic r,
+  Map<String, dynamic> local,
+  Map<String, dynamic> remote,
+) {
   final lu = local['updatedAt'] as int;
   final ru = remote['updatedAt'] as int;
   if (lu > ru) return l;

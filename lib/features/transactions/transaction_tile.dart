@@ -20,8 +20,9 @@ class TransactionTile extends StatelessWidget {
     final account = context.watch<AccountProvider>().byId(tx.accountId);
     final scheme = Theme.of(context).colorScheme;
     final isIncome = tx.type == TxType.income;
-    final date =
-    MaterialLocalizations.of(context).formatShortDate(tx.occurredAt);
+    final date = MaterialLocalizations.of(
+      context,
+    ).formatShortDate(tx.occurredAt);
     final details = [
       if (tx.note.isNotEmpty) tx.note,
       if (account != null) account.name,
@@ -29,9 +30,7 @@ class TransactionTile extends StatelessWidget {
     ].join(' • ');
 
     return ListTile(
-      leading: CircleAvatar(
-        child: Icon(iconFor(cat?.iconKey ?? 'category')),
-      ),
+      leading: CircleAvatar(child: Icon(iconFor(cat?.iconKey ?? 'category'))),
       title: Text(cat?.name ?? 'Unknown category'),
       subtitle: Text(details, maxLines: 1, overflow: TextOverflow.ellipsis),
       trailing: Column(
@@ -46,7 +45,10 @@ class TransactionTile extends StatelessWidget {
               color: isIncome ? Colors.green : scheme.error,
             ),
           ),
-          Text(tx.syncStatus.name, style: Theme.of(context).textTheme.labelSmall),
+          Text(
+            tx.syncStatus.name,
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
         ],
       ),
     );

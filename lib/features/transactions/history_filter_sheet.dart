@@ -75,23 +75,27 @@ class _FilterSheetState extends State<_FilterSheet> {
     }
 
     final h = context.read<HistoryProvider>();
-    h.setFilter(h.filter.copyWith(
-      categoryId: _categoryId,
-      accountId: _accountId,
-      minMinor: min,
-      maxMinor: max,
-    ));
+    h.setFilter(
+      h.filter.copyWith(
+        categoryId: _categoryId,
+        accountId: _accountId,
+        minMinor: min,
+        maxMinor: max,
+      ),
+    );
     Navigator.pop(context);
   }
 
   void _reset() {
     final h = context.read<HistoryProvider>();
-    h.setFilter(h.filter.copyWith(
-      categoryId: null,
-      accountId: null,
-      minMinor: null,
-      maxMinor: null,
-    ));
+    h.setFilter(
+      h.filter.copyWith(
+        categoryId: null,
+        accountId: null,
+        minMinor: null,
+        maxMinor: null,
+      ),
+    );
     Navigator.pop(context);
   }
 
@@ -109,7 +113,9 @@ class _FilterSheetState extends State<_FilterSheet> {
     final accountIds = accounts.map((a) => a.id).toSet();
 
     // If a saved id no longer exists (archived), fall back to "All".
-    final categoryValue = categoryIds.contains(_categoryId) ? _categoryId : null;
+    final categoryValue = categoryIds.contains(_categoryId)
+        ? _categoryId
+        : null;
     final accountValue = accountIds.contains(_accountId) ? _accountId : null;
 
     return Padding(
@@ -172,8 +178,9 @@ class _FilterSheetState extends State<_FilterSheet> {
                 Expanded(
                   child: TextField(
                     controller: _minCtrl,
-                    keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     decoration: const InputDecoration(
                       labelText: 'Min amount',
                       border: OutlineInputBorder(),
@@ -184,8 +191,9 @@ class _FilterSheetState extends State<_FilterSheet> {
                 Expanded(
                   child: TextField(
                     controller: _maxCtrl,
-                    keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     decoration: const InputDecoration(
                       labelText: 'Max amount',
                       border: OutlineInputBorder(),

@@ -12,8 +12,7 @@ void main() {
   late HistoryProvider p;
 
   // Gives the database stream time to deliver its next list.
-  Future<void> settle() =>
-      Future.delayed(const Duration(milliseconds: 80));
+  Future<void> settle() => Future.delayed(const Duration(milliseconds: 80));
 
   List<String> notes() => p.items.map((r) => r.note).toList();
 

@@ -69,13 +69,17 @@ void main() {
 
   test('category budgets name the category', () {
     expect(
-      calc(40000, 30000)
-          .message(monthName: 'October', categoryName: 'Food', formatMoney: money),
+      calc(
+        40000,
+        30000,
+      ).message(monthName: 'October', categoryName: 'Food', formatMoney: money),
       'You have used 75% of your October Food budget.',
     );
     expect(
-      calc(40000, 45000)
-          .message(monthName: 'October', categoryName: 'Food', formatMoney: money),
+      calc(
+        40000,
+        45000,
+      ).message(monthName: 'October', categoryName: 'Food', formatMoney: money),
       'Food budget exceeded by ₹50.00.',
     );
   });

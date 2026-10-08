@@ -6,10 +6,7 @@ import '../../providers/budget_provider.dart';
 import '../../providers/category_provider.dart';
 
 class SetBudgetScreen extends StatefulWidget {
-  const SetBudgetScreen({
-    super.key,
-    this.categoryId,
-  });
+  const SetBudgetScreen({super.key, this.categoryId});
 
   final String? categoryId;
 
@@ -47,8 +44,7 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
       return 'Monthly Budget';
     }
 
-    final category =
-    context.read<CategoryProvider>().byId(widget.categoryId!);
+    final category = context.read<CategoryProvider>().byId(widget.categoryId!);
 
     if (category == null) {
       return 'Category Budget';
@@ -89,11 +85,9 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to save budget: $e'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to save budget: $e')));
     } finally {
       if (mounted) {
         setState(() {
@@ -153,11 +147,9 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to clear budget: $e'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to clear budget: $e')));
     } finally {
       if (mounted) {
         setState(() {
@@ -175,21 +167,14 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          existingBudget == null
-              ? 'Set $_title'
-              : 'Edit $_title',
-        ),
+        title: Text(existingBudget == null ? 'Set $_title' : 'Edit $_title'),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            Text(
-              _title,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(_title, style: Theme.of(context).textTheme.titleLarge),
 
             const SizedBox(height: 8),
 
@@ -243,13 +228,9 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
             if (existingBudget != null)
               Card(
                 child: ListTile(
-                  leading: const Icon(
-                    Icons.account_balance_wallet_outlined,
-                  ),
+                  leading: const Icon(Icons.account_balance_wallet_outlined),
                   title: const Text('Current budget'),
-                  subtitle: Text(
-                    formatMinor(existingBudget),
-                  ),
+                  subtitle: Text(formatMinor(existingBudget)),
                 ),
               ),
 
@@ -259,16 +240,12 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
               onPressed: _saving ? null : _save,
               icon: _saving
                   ? const SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                ),
-              )
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : const Icon(Icons.save_outlined),
-              label: Text(
-                _saving ? 'Saving...' : 'Save Budget',
-              ),
+              label: Text(_saving ? 'Saving...' : 'Save Budget'),
             ),
 
             if (existingBudget != null) ...[

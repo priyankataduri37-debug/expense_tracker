@@ -8,20 +8,22 @@ void main() {
     final db = AppDatabase(NativeDatabase.memory());
     final now = DateTime(2026, 10, 7);
 
-    await db.into(db.transactions).insert(
-      TransactionsCompanion.insert(
-        id: 'abc',
-        userId: 'local',
-        createdAt: now,
-        updatedAt: now,
-        syncStatus: SyncStatus.pendingCreate,
-        amountMinor: 2500,
-        type: TxType.expense,
-        categoryId: 'food',
-        accountId: 'cash',
-        occurredAt: now,
-      ),
-    );
+    await db
+        .into(db.transactions)
+        .insert(
+          TransactionsCompanion.insert(
+            id: 'abc',
+            userId: 'local',
+            createdAt: now,
+            updatedAt: now,
+            syncStatus: SyncStatus.pendingCreate,
+            amountMinor: 2500,
+            type: TxType.expense,
+            categoryId: 'food',
+            accountId: 'cash',
+            occurredAt: now,
+          ),
+        );
 
     final rows = await db.select(db.transactions).get();
     expect(rows.length, 1);

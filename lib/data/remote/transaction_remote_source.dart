@@ -11,7 +11,7 @@ class RemoteTransaction {
 /// Path: users/{uid}/transactions/{id}
 class TransactionRemoteSource {
   TransactionRemoteSource([FirebaseFirestore? firestore])
-      : _fs = firestore ?? FirebaseFirestore.instance;
+    : _fs = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _fs;
 
@@ -19,22 +19,23 @@ class TransactionRemoteSource {
       _fs.collection('users').doc(uid).collection('transactions');
 
   Future<void> upsert(String uid, Map<String, dynamic> data) {
-    return _col(uid).doc(data['id'] as String).set(
-      {
-        ...data,
-        'serverUpdatedAt': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
+    return _col(uid).doc(data['id'] as String).set({
+      ...data,
+      'serverUpdatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 
   /// Documents changed after [sinceMicros]. Null means download everything.
   Future<List<RemoteTransaction>> fetchChangedSince(
-      String uid, int? sinceMicros) async {
+    String uid,
+    int? sinceMicros,
+  ) async {
     Query<Map<String, dynamic>> q = _col(uid).orderBy('serverUpdatedAt');
     if (sinceMicros != null) {
-      q = q.where('serverUpdatedAt',
-          isGreaterThan: Timestamp.fromMicrosecondsSinceEpoch(sinceMicros));
+      q = q.where(
+        'serverUpdatedAt',
+        isGreaterThan: Timestamp.fromMicrosecondsSinceEpoch(sinceMicros),
+      );
     }
     final snap = await q.get();
 

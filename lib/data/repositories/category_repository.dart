@@ -13,8 +13,8 @@ class CategoryRepository {
     final query = _db.select(_db.categories)
       ..where((c) => c.deletedAt.isNull())
       ..orderBy([
-            (c) => OrderingTerm.asc(c.isCustom),
-            (c) => OrderingTerm.asc(c.name),
+        (c) => OrderingTerm.asc(c.isCustom),
+        (c) => OrderingTerm.asc(c.name),
       ]);
     return query.watch();
   }

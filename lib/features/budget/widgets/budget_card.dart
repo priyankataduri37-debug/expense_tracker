@@ -34,9 +34,7 @@ class BudgetCard extends StatelessWidget {
       return const Card(
         child: Padding(
           padding: EdgeInsets.all(20),
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+          child: Center(child: CircularProgressIndicator()),
         ),
       );
     }
@@ -49,11 +47,7 @@ class BudgetCard extends StatelessWidget {
             children: [
               const Icon(Icons.error_outline),
               const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Unable to load budget: ${provider.error}',
-                ),
-              ),
+              Expanded(child: Text('Unable to load budget: ${provider.error}')),
             ],
           ),
         ),
@@ -83,9 +77,7 @@ class BudgetCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              const Text(
-                'No overall monthly budget has been set.',
-              ),
+              const Text('No overall monthly budget has been set.'),
               const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: onSetBudget,
@@ -104,10 +96,7 @@ class BudgetCard extends StatelessWidget {
 
     final month = monthName ?? _currentMonthName();
 
-    final warning = status.message(
-      monthName: month,
-      formatMoney: money,
-    );
+    final warning = status.message(monthName: month, formatMoney: money);
 
     final statusColor = _statusColor(context, status.level);
 
@@ -178,9 +167,9 @@ class BudgetCard extends StatelessWidget {
               children: [
                 Text(
                   '${status.wholePercent}% used',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 Text(
                   _statusLabel(status.level),
@@ -196,10 +185,7 @@ class BudgetCard extends StatelessWidget {
 
             // Remaining / exceeded
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: statusColor.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(10),
@@ -232,10 +218,7 @@ class BudgetCard extends StatelessWidget {
             // Warning
             if (warning != null) ...[
               const SizedBox(height: 12),
-              Text(
-                warning,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+              Text(warning, style: Theme.of(context).textTheme.bodyMedium),
             ],
           ],
         ),

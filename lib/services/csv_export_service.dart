@@ -8,10 +8,8 @@ import '../data/local/enums.dart';
 import '../data/models/transaction_filter.dart';
 
 class CsvExportService {
-  CsvExportService(
-      this._db, {
-        required String Function() userId,
-      }) : _userId = userId;
+  CsvExportService(this._db, {required String Function() userId})
+    : _userId = userId;
 
   final AppDatabase _db;
   final String Function() _userId;
@@ -28,7 +26,7 @@ class CsvExportService {
     final query = _db.select(_db.transactions)
       ..where((t) {
         Expression<bool> condition =
-        t.userId.equals(uid) & t.deletedAt.isNull();
+            t.userId.equals(uid) & t.deletedAt.isNull();
 
         // Income / Expense
         if (filter.type != null) {
@@ -37,45 +35,42 @@ class CsvExportService {
 
         // Category
         if (filter.categoryId != null) {
-          condition =
-          condition & t.categoryId.equals(filter.categoryId!);
+          condition = condition & t.categoryId.equals(filter.categoryId!);
         }
 
         // Account
         if (filter.accountId != null) {
-          condition =
-          condition & t.accountId.equals(filter.accountId!);
+          condition = condition & t.accountId.equals(filter.accountId!);
         }
 
         // Minimum amount
         if (filter.minMinor != null) {
-          condition = condition &
-          t.amountMinor.isBiggerOrEqualValue(filter.minMinor!);
+          condition =
+              condition & t.amountMinor.isBiggerOrEqualValue(filter.minMinor!);
         }
 
         // Maximum amount
         if (filter.maxMinor != null) {
-          condition = condition &
-          t.amountMinor.isSmallerOrEqualValue(filter.maxMinor!);
+          condition =
+              condition & t.amountMinor.isSmallerOrEqualValue(filter.maxMinor!);
         }
 
         // Date from
         if (filter.from != null) {
           condition =
-          condition & t.occurredAt.isBiggerOrEqualValue(filter.from!);
+              condition & t.occurredAt.isBiggerOrEqualValue(filter.from!);
         }
 
         // Date to is EXCLUSIVE in TransactionFilter.
         if (filter.to != null) {
-          condition =
-          condition & t.occurredAt.isSmallerThanValue(filter.to!);
+          condition = condition & t.occurredAt.isSmallerThanValue(filter.to!);
         }
 
         return condition;
       })
       ..orderBy([
-            (t) => OrderingTerm.asc(t.occurredAt),
-            (t) => OrderingTerm.asc(t.createdAt),
+        (t) => OrderingTerm.asc(t.occurredAt),
+        (t) => OrderingTerm.asc(t.createdAt),
       ]);
 
     var transactions = await query.get();
@@ -86,13 +81,13 @@ class CsvExportService {
     // Custom categories belong to the signed-in user.
     // ------------------------------------------------------------
 
-    final categories = await (_db.select(_db.categories)
-      ..where(
-            (c) =>
-        (c.userId.equals(uid) | c.userId.equals('local')) &
-        c.deletedAt.isNull(),
-      ))
-        .get();
+    final categories =
+        await (_db.select(_db.categories)..where(
+              (c) =>
+                  (c.userId.equals(uid) | c.userId.equals('local')) &
+                  c.deletedAt.isNull(),
+            ))
+            .get();
 
     final categoryNames = <String, String>{
       for (final category in categories) category.id: category.name,
@@ -102,11 +97,9 @@ class CsvExportService {
     // Load accounts.
     // ------------------------------------------------------------
 
-    final accounts = await (_db.select(_db.accounts)
-      ..where(
-            (a) => a.userId.equals(uid) & a.deletedAt.isNull(),
-      ))
-        .get();
+    final accounts = await (_db.select(
+      _db.accounts,
+    )..where((a) => a.userId.equals(uid) & a.deletedAt.isNull())).get();
 
     final accountNames = <String, String>{
       for (final account in accounts) account.id: account.name,
@@ -125,8 +118,8 @@ class CsvExportService {
       transactions = transactions.where((transaction) {
         final note = transaction.note.toLowerCase();
 
-        final category =
-        (categoryNames[transaction.categoryId] ?? '').toLowerCase();
+        final category = (categoryNames[transaction.categoryId] ?? '')
+            .toLowerCase();
 
         final amount = _formatAmount(transaction.amountMinor);
 
@@ -142,22 +135,16 @@ class CsvExportService {
 
     final buffer = StringBuffer();
 
-    buffer.writeln(
-      'Date,Type,Category,Account,Amount,Note',
-    );
+    buffer.writeln('Date,Type,Category,Account,Amount,Note');
 
     for (final transaction in transactions) {
       final date = _formatDate(transaction.occurredAt);
 
-      final type = transaction.type == TxType.expense
-          ? 'Expense'
-          : 'Income';
+      final type = transaction.type == TxType.expense ? 'Expense' : 'Income';
 
-      final category =
-          categoryNames[transaction.categoryId] ?? 'Unknown';
+      final category = categoryNames[transaction.categoryId] ?? 'Unknown';
 
-      final account =
-          accountNames[transaction.accountId] ?? 'Unknown';
+      final account = accountNames[transaction.accountId] ?? 'Unknown';
 
       final amount = _formatAmount(transaction.amountMinor);
 
@@ -165,11 +152,11 @@ class CsvExportService {
 
       buffer.writeln(
         '$date,'
-            '$type,'
-            '${_escapeCsv(category)},'
-            '${_escapeCsv(account)},'
-            '$amount,'
-            '$note',
+        '$type,'
+        '${_escapeCsv(category)},'
+        '${_escapeCsv(account)},'
+        '$amount,'
+        '$note',
       );
     }
 

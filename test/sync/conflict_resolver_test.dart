@@ -6,20 +6,19 @@ Map<String, dynamic> tx({
   String note = 'Lunch',
   int? deletedAt,
   int updatedAt = 1000,
-}) =>
-    {
-      'id': 't1',
-      'userId': 'u1',
-      'amountMinor': amount,
-      'type': 'expense',
-      'categoryId': 'exp_food',
-      'accountId': 'acc_cash',
-      'note': note,
-      'occurredAt': 5000,
-      'createdAt': 100,
-      'updatedAt': updatedAt,
-      'deletedAt': deletedAt,
-    };
+}) => {
+  'id': 't1',
+  'userId': 'u1',
+  'amountMinor': amount,
+  'type': 'expense',
+  'categoryId': 'exp_food',
+  'accountId': 'acc_cash',
+  'note': note,
+  'occurredAt': 5000,
+  'createdAt': 100,
+  'updatedAt': updatedAt,
+  'deletedAt': deletedAt,
+};
 
 void main() {
   test('different fields changed on each device: both changes survive', () {

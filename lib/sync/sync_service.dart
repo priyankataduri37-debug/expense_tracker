@@ -12,11 +12,11 @@ import 'transaction_mapper.dart';
 
 class SyncService {
   SyncService(
-      this._repo,
-      this._remote,
-      this._meta, {
-        required String Function() userId,
-      }) : _userId = userId;
+    this._repo,
+    this._remote,
+    this._meta, {
+    required String Function() userId,
+  }) : _userId = userId;
 
   final TransactionRepository _repo;
   final TransactionRemoteSource _remote;

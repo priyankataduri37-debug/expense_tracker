@@ -53,10 +53,9 @@ class SyncStatusChip extends StatelessWidget {
               child: Text(
                 label,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(color: color),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelMedium?.copyWith(color: color),
               ),
             ),
           ],

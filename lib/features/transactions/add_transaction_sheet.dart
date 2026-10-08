@@ -13,9 +13,9 @@ Future<void> showAddTransactionSheet(BuildContext context) =>
 
 /// Opens the form. Pass [existing] to edit a transaction instead of adding.
 Future<void> showTransactionSheet(
-    BuildContext context, {
-      TransactionRow? existing,
-    }) {
+  BuildContext context, {
+  TransactionRow? existing,
+}) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -110,7 +110,12 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
     final provider = context.read<TransactionProvider>();
     final navigator = Navigator.of(context);
     final occurredAt = DateTime(
-        _date.year, _date.month, _date.day, _time.hour, _time.minute);
+      _date.year,
+      _date.month,
+      _date.day,
+      _time.hour,
+      _time.minute,
+    );
     setState(() {
       _saving = true;
       _error = null;
@@ -166,8 +171,10 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(_isEdit ? 'Edit transaction' : 'Add transaction',
-                style: theme.textTheme.titleLarge),
+            Text(
+              _isEdit ? 'Edit transaction' : 'Add transaction',
+              style: theme.textTheme.titleLarge,
+            ),
             const SizedBox(height: 16),
             SegmentedButton<TxType>(
               segments: const [
@@ -192,8 +199,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
             TextField(
               controller: _amountCtrl,
               autofocus: !_isEdit,
-              keyboardType:
-              const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Amount',
                 border: OutlineInputBorder(),
@@ -237,8 +245,9 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                   child: OutlinedButton.icon(
                     onPressed: _pickDate,
                     icon: const Icon(Icons.calendar_today, size: 18),
-                    label: Text(MaterialLocalizations.of(context)
-                        .formatMediumDate(_date)),
+                    label: Text(
+                      MaterialLocalizations.of(context).formatMediumDate(_date),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -271,10 +280,10 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
                 onPressed: _saving ? null : _save,
                 child: _saving
                     ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : Text(_isEdit ? 'Save changes' : 'Save'),
               ),
             ),

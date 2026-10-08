@@ -9,8 +9,6 @@ void main() {
   late TransactionRepository repo;
   final now = DateTime(2026, 10, 7, 10);
 
-
-
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
     repo = TransactionRepository(db, userId: () => 'u1', clock: () => now);
@@ -45,7 +43,11 @@ void main() {
     await addExpense('exp_food', 1000, DateTime(2026, 7, 2));
     await addExpense('exp_food', 500, DateTime(2026, 7, 10));
     await addExpense('exp_travel', 300, DateTime(2026, 7, 20));
-    await addExpense('exp_food', 700, DateTime(2026, 6, 30)); // last month: ignored
+    await addExpense(
+      'exp_food',
+      700,
+      DateTime(2026, 6, 30),
+    ); // last month: ignored
 
     final result = await repo.watchMonthlyExpenseByCategory().first;
 
@@ -79,7 +81,7 @@ void main() {
 
   test('rejects zero or negative amounts', () async {
     expect(
-          () => repo.add(
+      () => repo.add(
         amountMinor: 0,
         type: TxType.expense,
         categoryId: 'food',

@@ -61,10 +61,12 @@ void main() {
     final row = (await repo.findById(id))!;
     final merged = transactionToMap(row)..['note'] = 'From cloud';
 
-    final ok = await repo.applyMerged(merged,
-        expectedLocalUpdatedAt: row.updatedAt,
-        needsPush: false,
-        baseJson: '{}');
+    final ok = await repo.applyMerged(
+      merged,
+      expectedLocalUpdatedAt: row.updatedAt,
+      needsPush: false,
+      baseJson: '{}',
+    );
 
     final after = (await repo.findById(id))!;
     expect(ok, isTrue);
@@ -77,10 +79,12 @@ void main() {
     final row = (await repo.findById(id))!;
     final merged = transactionToMap(row);
 
-    await repo.applyMerged(merged,
-        expectedLocalUpdatedAt: row.updatedAt,
-        needsPush: true,
-        baseJson: '{}');
+    await repo.applyMerged(
+      merged,
+      expectedLocalUpdatedAt: row.updatedAt,
+      needsPush: true,
+      baseJson: '{}',
+    );
 
     expect((await repo.findById(id))!.syncStatus, SyncStatus.pendingUpdate);
   });
@@ -93,10 +97,12 @@ void main() {
     now = now.add(const Duration(seconds: 5));
     await repo.update(id, note: 'My newer edit');
 
-    final ok = await repo.applyMerged(merged,
-        expectedLocalUpdatedAt: row.updatedAt,
-        needsPush: false,
-        baseJson: '{}');
+    final ok = await repo.applyMerged(
+      merged,
+      expectedLocalUpdatedAt: row.updatedAt,
+      needsPush: false,
+      baseJson: '{}',
+    );
 
     expect(ok, isFalse);
     expect((await repo.findById(id))!.note, 'My newer edit');

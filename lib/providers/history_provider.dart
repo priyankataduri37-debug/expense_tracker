@@ -36,21 +36,23 @@ class HistoryProvider extends ChangeNotifier {
   void _subscribe() {
     _sub?.cancel();
     // The old list stays on screen until the new one arrives (no flicker).
-    _sub = _repo.watchFiltered(_filter, limit: _limit).listen(
+    _sub = _repo
+        .watchFiltered(_filter, limit: _limit)
+        .listen(
           (rows) {
-        _items = rows;
-        _loading = false;
-        _loadingMore = false;
-        _error = null;
-        notifyListeners();
-      },
-      onError: (Object e) {
-        _error = e.toString();
-        _loading = false;
-        _loadingMore = false;
-        notifyListeners();
-      },
-    );
+            _items = rows;
+            _loading = false;
+            _loadingMore = false;
+            _error = null;
+            notifyListeners();
+          },
+          onError: (Object e) {
+            _error = e.toString();
+            _loading = false;
+            _loadingMore = false;
+            notifyListeners();
+          },
+        );
   }
 
   /// A new filter always starts again from the first page.

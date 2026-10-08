@@ -6,11 +6,11 @@ import '../local/enums.dart';
 
 class BudgetRepository {
   BudgetRepository(
-      this._db, {
-        required String Function() userId,
-        DateTime Function()? clock,
-      })  : _userId = userId,
-        _clock = clock ?? DateTime.now;
+    this._db, {
+    required String Function() userId,
+    DateTime Function()? clock,
+  }) : _userId = userId,
+       _clock = clock ?? DateTime.now;
 
   final AppDatabase _db;
   final String Function() _userId;
@@ -20,13 +20,13 @@ class BudgetRepository {
   // In SQL, "= NULL" never matches, so a null category needs isNull().
   Expression<bool> _forCategory($BudgetsTable b, String? categoryId) =>
       categoryId == null
-          ? b.categoryId.isNull()
-          : b.categoryId.equals(categoryId);
+      ? b.categoryId.isNull()
+      : b.categoryId.equals(categoryId);
 
   /// All active budgets of the current user (overall + per category).
-  Stream<List<BudgetRow>> watchAll() => (_db.select(_db.budgets)
-    ..where((b) => b.deletedAt.isNull() & b.userId.equals(_userId())))
-      .watch();
+  Stream<List<BudgetRow>> watchAll() => (_db.select(
+    _db.budgets,
+  )..where((b) => b.deletedAt.isNull() & b.userId.equals(_userId()))).watch();
 
   /// Create or change a budget. [categoryId] null = the overall monthly budget.
   Future<void> set({String? categoryId, required int amountMinor}) async {
@@ -34,23 +34,30 @@ class BudgetRepository {
     final now = _clock();
 
     await _db.transaction(() async {
-      final found = await (_db.select(_db.budgets)
-        ..where((b) =>
-        _forCategory(b, categoryId) & b.userId.equals(_userId()))
-        ..orderBy([(b) => OrderingTerm.desc(b.updatedAt)])
-        ..limit(1))
-          .get();
+      final found =
+          await (_db.select(_db.budgets)
+                ..where(
+                  (b) =>
+                      _forCategory(b, categoryId) & b.userId.equals(_userId()),
+                )
+                ..orderBy([(b) => OrderingTerm.desc(b.updatedAt)])
+                ..limit(1))
+              .get();
 
       if (found.isEmpty) {
-        await _db.into(_db.budgets).insert(BudgetsCompanion.insert(
-          id: _uuid.v4(),
-          userId: _userId(),
-          createdAt: now,
-          updatedAt: now,
-          syncStatus: SyncStatus.pendingCreate,
-          categoryId: Value(categoryId),
-          amountMinor: amountMinor,
-        ));
+        await _db
+            .into(_db.budgets)
+            .insert(
+              BudgetsCompanion.insert(
+                id: _uuid.v4(),
+                userId: _userId(),
+                createdAt: now,
+                updatedAt: now,
+                syncStatus: SyncStatus.pendingCreate,
+                categoryId: Value(categoryId),
+                amountMinor: amountMinor,
+              ),
+            );
         return;
       }
 
@@ -63,7 +70,9 @@ class BudgetRepository {
       await (_db.update(_db.budgets)..where((b) => b.id.equals(row.id))).write(
         BudgetsCompanion(
           amountMinor: Value(amountMinor),
-          deletedAt: const Value<DateTime?>(null), // also revives a removed budget
+          deletedAt: const Value<DateTime?>(
+            null,
+          ), // also revives a removed budget
           updatedAt: Value(now),
           syncStatus: Value(status),
         ),
@@ -74,15 +83,18 @@ class BudgetRepository {
   /// Remove a budget (soft delete, same rule as transactions).
   Future<void> clear({String? categoryId}) {
     final now = _clock();
-    return (_db.update(_db.budgets)
-      ..where((b) =>
-      _forCategory(b, categoryId) &
-      b.userId.equals(_userId()) &
-      b.deletedAt.isNull()))
-        .write(BudgetsCompanion(
-      deletedAt: Value(now),
-      updatedAt: Value(now),
-      syncStatus: const Value(SyncStatus.pendingDelete),
-    ));
+    return (_db.update(_db.budgets)..where(
+          (b) =>
+              _forCategory(b, categoryId) &
+              b.userId.equals(_userId()) &
+              b.deletedAt.isNull(),
+        ))
+        .write(
+          BudgetsCompanion(
+            deletedAt: Value(now),
+            updatedAt: Value(now),
+            syncStatus: const Value(SyncStatus.pendingDelete),
+          ),
+        );
   }
 }

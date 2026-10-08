@@ -17,8 +17,18 @@ class _HistoryFilterBarState extends State<HistoryFilterBar> {
   final _searchCtrl = TextEditingController();
 
   static const _months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   @override
@@ -45,18 +55,20 @@ class _HistoryFilterBarState extends State<HistoryFilterBar> {
       lastDate: DateTime(now.year + 1, 12, 31),
       initialDateRange: (f.from != null && f.to != null)
           ? DateTimeRange(
-        start: f.from!,
-        end: f.to!.subtract(const Duration(days: 1)),
-      )
+              start: f.from!,
+              end: f.to!.subtract(const Duration(days: 1)),
+            )
           : null,
     );
     if (picked == null) return;
 
     // The filter's end date is exclusive, so add one day to the picked end.
-    h.setFilter(f.copyWith(
-      from: DateTime(picked.start.year, picked.start.month, picked.start.day),
-      to: DateTime(picked.end.year, picked.end.month, picked.end.day + 1),
-    ));
+    h.setFilter(
+      f.copyWith(
+        from: DateTime(picked.start.year, picked.start.month, picked.start.day),
+        to: DateTime(picked.end.year, picked.end.month, picked.end.day + 1),
+      ),
+    );
   }
 
   @override
@@ -70,7 +82,8 @@ class _HistoryFilterBarState extends State<HistoryFilterBar> {
     final isThisMonth = f.from == monthStart && f.to == nextMonth;
     final hasRange = f.from != null && f.to != null;
 
-    final moreCount = (f.categoryId != null ? 1 : 0) +
+    final moreCount =
+        (f.categoryId != null ? 1 : 0) +
         (f.accountId != null ? 1 : 0) +
         ((f.minMinor != null || f.maxMinor != null) ? 1 : 0);
 
@@ -91,13 +104,13 @@ class _HistoryFilterBarState extends State<HistoryFilterBar> {
               suffixIcon: _searchCtrl.text.isEmpty
                   ? null
                   : IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  _searchCtrl.clear();
-                  h.setSearch('');
-                  setState(() {});
-                },
-              ),
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        _searchCtrl.clear();
+                        h.setSearch('');
+                        setState(() {});
+                      },
+                    ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(28),
               ),
@@ -123,8 +136,7 @@ class _HistoryFilterBarState extends State<HistoryFilterBar> {
               ChoiceChip(
                 label: const Text('Income'),
                 selected: f.type == TxType.income,
-                onSelected: (_) =>
-                    h.setFilter(f.copyWith(type: TxType.income)),
+                onSelected: (_) => h.setFilter(f.copyWith(type: TxType.income)),
               ),
               const SizedBox(width: 8),
               ChoiceChip(

@@ -5,15 +5,17 @@ import 'tables.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [
-  Transactions,
-  Accounts,
-  Categories,
-  Budgets,
-  Goals,
-  RecurringRules,
-  SyncMeta,
-])
+@DriftDatabase(
+  tables: [
+    Transactions,
+    Accounts,
+    Categories,
+    Budgets,
+    Goals,
+    RecurringRules,
+    SyncMeta,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
@@ -37,8 +39,7 @@ class AppDatabase extends _$AppDatabase {
   Future<void> _seedDefaults() async {
     final now = DateTime.now();
 
-    CategoriesCompanion cat(
-        String id, String name, TxType type, String icon) =>
+    CategoriesCompanion cat(String id, String name, TxType type, String icon) =>
         CategoriesCompanion.insert(
           id: id,
           userId: 'local',
@@ -60,7 +61,12 @@ class AppDatabase extends _$AppDatabase {
         cat('exp_entertainment', 'Entertainment', TxType.expense, 'movie'),
         cat('exp_health', 'Health', TxType.expense, 'medical_services'),
         cat('exp_education', 'Education', TxType.expense, 'school'),
-        cat('exp_subscription', 'Subscription', TxType.expense, 'subscriptions'),
+        cat(
+          'exp_subscription',
+          'Subscription',
+          TxType.expense,
+          'subscriptions',
+        ),
         cat('exp_other', 'Other', TxType.expense, 'category'),
         cat('inc_salary', 'Salary', TxType.income, 'payments'),
         cat('inc_freelance', 'Freelance', TxType.income, 'laptop'),

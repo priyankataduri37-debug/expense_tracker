@@ -10,11 +10,11 @@ enum SyncState { idle, syncing, failed }
 
 class SyncProvider extends ChangeNotifier {
   SyncProvider(
-      this._sync,
-      this._repo, {
-        required this.enabled,
-        Connectivity? connectivity,
-      }) : _connectivity = connectivity ?? Connectivity() {
+    this._sync,
+    this._repo, {
+    required this.enabled,
+    Connectivity? connectivity,
+  }) : _connectivity = connectivity ?? Connectivity() {
     if (enabled) _start();
   }
 
@@ -68,8 +68,7 @@ class SyncProvider extends ChangeNotifier {
       if (_online && !wasOnline) syncNow();
     });
 
-    _periodic =
-        Timer.periodic(const Duration(minutes: 5), (_) => syncNow());
+    _periodic = Timer.periodic(const Duration(minutes: 5), (_) => syncNow());
 
     syncNow(); // app start / right after login
   }

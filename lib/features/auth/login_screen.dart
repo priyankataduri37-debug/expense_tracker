@@ -65,8 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Icon(Icons.account_balance_wallet_rounded,
-                        size: 64, color: theme.colorScheme.primary),
+                    Icon(
+                      Icons.account_balance_wallet_rounded,
+                      size: 64,
+                      color: theme.colorScheme.primary,
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       _isSignUp ? 'Create account' : 'Welcome back',
@@ -102,15 +105,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         prefixIcon: const Icon(Icons.lock_outline),
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
-                          icon: Icon(_hidePassword
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined),
+                          icon: Icon(
+                            _hidePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
                           onPressed: () =>
                               setState(() => _hidePassword = !_hidePassword),
                         ),
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Enter your password';
+                        if (v == null || v.isEmpty)
+                          return 'Enter your password';
                         if (_isSignUp && v.length < 6) {
                           return 'At least 6 characters';
                         }
@@ -131,18 +137,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: auth.isBusy ? null : _submit,
                       child: auth.isBusy
                           ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
                           : Text(_isSignUp ? 'Sign up' : 'Sign in'),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
                       onPressed: auth.isBusy ? null : _toggleMode,
-                      child: Text(_isSignUp
-                          ? 'Already have an account? Sign in'
-                          : "Don't have an account? Sign up"),
+                      child: Text(
+                        _isSignUp
+                            ? 'Already have an account? Sign in'
+                            : "Don't have an account? Sign up",
+                      ),
                     ),
                   ],
                 ),

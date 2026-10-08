@@ -144,27 +144,21 @@ class SettingsScreen extends StatelessWidget {
       // User closed the filter sheet without exporting.
       if (filter == null) return;
 
-      final result = await context
-          .read<CsvExportService>()
-          .exportTransactions(
+      final result = await context.read<CsvExportService>().exportTransactions(
         filter: filter,
       );
 
       if (!context.mounted) return;
 
       if (result == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('CSV export cancelled.'),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('CSV export cancelled.')));
         return;
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Transactions exported successfully.'),
-        ),
+        const SnackBar(content: Text('Transactions exported successfully.')),
       );
     } catch (e) {
       if (!context.mounted) return;
@@ -189,11 +183,11 @@ class SettingsScreen extends StatelessWidget {
           title: const Text('Reset local data?'),
           content: const Text(
             'This will permanently delete your locally stored '
-                'transactions, accounts, budgets, goals, recurring rules, '
-                'and custom categories from this device.\n\n'
-                'Your cloud data will not be deleted. '
-                'Cloud data may appear again after the next sync.\n\n'
-                'This cannot be undone.',
+            'transactions, accounts, budgets, goals, recurring rules, '
+            'and custom categories from this device.\n\n'
+            'Your cloud data will not be deleted. '
+            'Cloud data may appear again after the next sync.\n\n'
+            'This cannot be undone.',
           ),
           actions: [
             TextButton(
@@ -216,16 +210,12 @@ class SettingsScreen extends StatelessWidget {
     if (confirmed != true) return;
 
     try {
-      await context
-          .read<LocalDataResetService>()
-          .resetForUser(uid);
+      await context.read<LocalDataResetService>().resetForUser(uid);
 
       if (!context.mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Local data reset successfully.'),
-        ),
+        const SnackBar(content: Text('Local data reset successfully.')),
       );
     } catch (e) {
       if (!context.mounted) return;

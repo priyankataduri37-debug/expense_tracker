@@ -22,79 +22,81 @@ class DashboardScreen extends StatelessWidget {
       body: d.isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-        children: [
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: SyncStatusChip(),
-        ),
-          Card(
-            color: theme.colorScheme.primaryContainer,
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Current balance',
-                      style: theme.textTheme.labelLarge),
-                  const SizedBox(height: 8),
-                  Text(
-                    formatMinor(d.balanceMinor),
-                    style: theme.textTheme.headlineLarge
-                        ?.copyWith(fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+              children: [
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: SyncStatusChip(),
+                ),
+                Card(
+                  color: theme.colorScheme.primaryContainer,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Current balance',
+                          style: theme.textTheme.labelLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          formatMinor(d.balanceMinor),
+                          style: theme.textTheme.headlineLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _StatCard(
+                        label: 'Income',
+                        amount: formatMinor(d.incomeMinor),
+                        icon: Icons.arrow_downward,
+                        color: Colors.green,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _StatCard(
+                        label: 'Expenses',
+                        amount: formatMinor(d.expenseMinor),
+                        icon: Icons.arrow_upward,
+                        color: theme.colorScheme.error,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                BudgetCard(
+                  onSetBudget: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const BudgetScreen()),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 24),
+                Text('Recent transactions', style: theme.textTheme.titleMedium),
+                const SizedBox(height: 8),
+                if (d.recent.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32),
+                    child: Center(
+                      child: Text('No transactions yet. Tap + to add one.'),
+                    ),
+                  )
+                else
+                  for (final t in d.recent) TransactionTile(tx: t),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _StatCard(
-                  label: 'Income',
-                  amount: formatMinor(d.incomeMinor),
-                  icon: Icons.arrow_downward,
-                  color: Colors.green,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _StatCard(
-                  label: 'Expenses',
-                  amount: formatMinor(d.expenseMinor),
-                  icon: Icons.arrow_upward,
-                  color: theme.colorScheme.error,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          BudgetCard(
-            onSetBudget: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const BudgetScreen(),
-                ),
-              );
-            },
-          ),
-
-          const SizedBox(height: 24),
-          Text('Recent transactions', style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          if (d.recent.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 32),
-              child: Center(
-                  child: Text('No transactions yet. Tap + to add one.')),
-            )
-          else
-            for (final t in d.recent) TransactionTile(tx: t),
-        ],
-      ),
     );
   }
 }
@@ -131,8 +133,9 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               amount,
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),

@@ -30,13 +30,13 @@ class TransactionFilter {
 
   bool get isActive =>
       type != null ||
-          categoryId != null ||
-          accountId != null ||
-          from != null ||
-          to != null ||
-          minMinor != null ||
-          maxMinor != null ||
-          (search?.trim().isNotEmpty ?? false);
+      categoryId != null ||
+      accountId != null ||
+      from != null ||
+      to != null ||
+      minMinor != null ||
+      maxMinor != null ||
+      (search?.trim().isNotEmpty ?? false);
 
   /// Leave a field out to keep it. Pass null to clear it.
   TransactionFilter copyWith({

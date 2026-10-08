@@ -38,8 +38,10 @@ void main() {
     await repo.set(categoryId: 'exp_food', amountMinor: 40000);
     final rows = await active();
     expect(rows, hasLength(2));
-    expect(rows.where((r) => r.categoryId == 'exp_food').single.amountMinor,
-        40000);
+    expect(
+      rows.where((r) => r.categoryId == 'exp_food').single.amountMinor,
+      40000,
+    );
   });
 
   test('clear removes only that budget', () async {

@@ -136,8 +136,7 @@ class _EmptyState extends StatelessWidget {
             if (filtersActive) ...[
               const SizedBox(height: 16),
               FilledButton.tonal(
-                onPressed: () =>
-                    context.read<HistoryProvider>().clearFilters(),
+                onPressed: () => context.read<HistoryProvider>().clearFilters(),
                 child: const Text('Clear filters'),
               ),
             ],

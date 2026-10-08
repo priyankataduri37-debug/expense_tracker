@@ -24,7 +24,7 @@ class TransactionProvider extends ChangeNotifier {
 
   void _subscribe() {
     _sub = _repo.watchAll().listen(
-          (rows) {
+      (rows) {
         _items = rows;
         _loading = false;
         _error = null;
@@ -45,34 +45,32 @@ class TransactionProvider extends ChangeNotifier {
     required String accountId,
     required DateTime occurredAt,
     String note = '',
-  }) =>
-      _repo.add(
-        amountMinor: amountMinor,
-        type: type,
-        categoryId: categoryId,
-        accountId: accountId,
-        occurredAt: occurredAt,
-        note: note,
-      );
+  }) => _repo.add(
+    amountMinor: amountMinor,
+    type: type,
+    categoryId: categoryId,
+    accountId: accountId,
+    occurredAt: occurredAt,
+    note: note,
+  );
 
   Future<void> update(
-      String id, {
-        int? amountMinor,
-        TxType? type,
-        String? categoryId,
-        String? accountId,
-        DateTime? occurredAt,
-        String? note,
-      }) =>
-      _repo.update(
-        id,
-        amountMinor: amountMinor,
-        type: type,
-        categoryId: categoryId,
-        accountId: accountId,
-        occurredAt: occurredAt,
-        note: note,
-      );
+    String id, {
+    int? amountMinor,
+    TxType? type,
+    String? categoryId,
+    String? accountId,
+    DateTime? occurredAt,
+    String? note,
+  }) => _repo.update(
+    id,
+    amountMinor: amountMinor,
+    type: type,
+    categoryId: categoryId,
+    accountId: accountId,
+    occurredAt: occurredAt,
+    note: note,
+  );
 
   Future<void> delete(String id) async {
     // Dismissible needs the item gone from the list immediately.

@@ -19,58 +19,48 @@ class BudgetScreen extends StatelessWidget {
     final expenseCategories = categories.forType(TxType.expense);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Budgets'),
-      ),
+      appBar: AppBar(title: const Text('Budgets')),
       body: budget.isLoading
-          ? const Center(
-        child: CircularProgressIndicator(),
-      )
+          ? const Center(child: CircularProgressIndicator())
           : ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-        children: [
-          _OverallBudgetCard(
-            budgetProvider: budget,
-          ),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+              children: [
+                _OverallBudgetCard(budgetProvider: budget),
 
-          const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-          Text(
-            'Category budgets',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-
-          const SizedBox(height: 8),
-
-          if (expenseCategories.isEmpty)
-            const Card(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  'No expense categories available.',
+                Text(
+                  'Category budgets',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-              ),
-            )
-          else
-            for (final category in expenseCategories)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: _CategoryBudgetCard(
-                  categoryId: category.id,
-                  categoryName: category.name,
-                  budgetProvider: budget,
-                ),
-              ),
-        ],
-      ),
+
+                const SizedBox(height: 8),
+
+                if (expenseCategories.isEmpty)
+                  const Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text('No expense categories available.'),
+                    ),
+                  )
+                else
+                  for (final category in expenseCategories)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _CategoryBudgetCard(
+                        categoryId: category.id,
+                        categoryName: category.name,
+                        budgetProvider: budget,
+                      ),
+                    ),
+              ],
+            ),
     );
   }
 }
 
 class _OverallBudgetCard extends StatelessWidget {
-  const _OverallBudgetCard({
-    required this.budgetProvider,
-  });
+  const _OverallBudgetCard({required this.budgetProvider});
 
   final BudgetProvider budgetProvider;
 
@@ -95,9 +85,7 @@ class _OverallBudgetCard extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  tooltip: budgetAmount == null
-                      ? 'Set budget'
-                      : 'Edit budget',
+                  tooltip: budgetAmount == null ? 'Set budget' : 'Edit budget',
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -106,9 +94,7 @@ class _OverallBudgetCard extends StatelessWidget {
                     );
                   },
                   icon: Icon(
-                    budgetAmount == null
-                        ? Icons.add
-                        : Icons.edit_outlined,
+                    budgetAmount == null ? Icons.add : Icons.edit_outlined,
                   ),
                 ),
               ],
@@ -117,13 +103,11 @@ class _OverallBudgetCard extends StatelessWidget {
             const SizedBox(height: 12),
 
             if (status == null)
-              const Text(
-                'No monthly budget set.',
-              )
+              const Text('No monthly budget set.')
             else ...[
               Text(
                 '${formatMinor(status.spentMinor)} / '
-                    '${formatMinor(status.budgetMinor)}',
+                '${formatMinor(status.budgetMinor)}',
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -153,10 +137,7 @@ class _OverallBudgetCard extends StatelessWidget {
     );
   }
 
-  Widget finalMessage(
-      BuildContext context,
-      BudgetStatus status,
-      ) {
+  Widget finalMessage(BuildContext context, BudgetStatus status) {
     final message = status.message(
       monthName: _currentMonthName(),
       formatMoney: formatMinor,
@@ -168,10 +149,7 @@ class _OverallBudgetCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 12),
-      child: Text(
-        message,
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
+      child: Text(message, style: Theme.of(context).textTheme.bodyMedium),
     );
   }
 
@@ -235,13 +213,11 @@ class _CategoryBudgetCard extends StatelessWidget {
                   const SizedBox(height: 6),
 
                   if (status == null)
-                    const Text(
-                      'No budget set',
-                    )
+                    const Text('No budget set')
                   else ...[
                     Text(
                       '${formatMinor(status.spentMinor)} / '
-                          '${formatMinor(status.budgetMinor)}',
+                      '${formatMinor(status.budgetMinor)}',
                     ),
 
                     const SizedBox(height: 8),
@@ -288,22 +264,16 @@ class _CategoryBudgetCard extends StatelessWidget {
             const SizedBox(width: 8),
 
             IconButton(
-              tooltip: budgetAmount == null
-                  ? 'Set budget'
-                  : 'Edit budget',
+              tooltip: budgetAmount == null ? 'Set budget' : 'Edit budget',
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => SetBudgetScreen(
-                      categoryId: categoryId,
-                    ),
+                    builder: (_) => SetBudgetScreen(categoryId: categoryId),
                   ),
                 );
               },
               icon: Icon(
-                budgetAmount == null
-                    ? Icons.add
-                    : Icons.edit_outlined,
+                budgetAmount == null ? Icons.add : Icons.edit_outlined,
               ),
             ),
           ],
@@ -357,5 +327,4 @@ class _CategoryBudgetCard extends StatelessWidget {
         return 'Over budget';
     }
   }
-
 }

@@ -6,9 +6,7 @@ import '../../data/models/transaction_filter.dart';
 import '../../providers/account_provider.dart';
 import '../../providers/category_provider.dart';
 
-Future<TransactionFilter?> showCsvExportFilterSheet(
-    BuildContext context,
-    ) {
+Future<TransactionFilter?> showCsvExportFilterSheet(BuildContext context) {
   return showModalBottomSheet<TransactionFilter>(
     context: context,
     isScrollControlled: true,
@@ -21,12 +19,10 @@ class _CsvExportFilterSheet extends StatefulWidget {
   const _CsvExportFilterSheet();
 
   @override
-  State<_CsvExportFilterSheet> createState() =>
-      _CsvExportFilterSheetState();
+  State<_CsvExportFilterSheet> createState() => _CsvExportFilterSheetState();
 }
 
-class _CsvExportFilterSheetState
-    extends State<_CsvExportFilterSheet> {
+class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
   String _search = '';
 
   TxType? _type;
@@ -80,25 +76,16 @@ class _CsvExportFilterSheetState
     return '${date.day} ${months[date.month - 1]}';
   }
 
-  bool get _hasDateRange =>
-      _from != null && _to != null;
+  bool get _hasDateRange => _from != null && _to != null;
 
   bool get _isThisMonth {
     if (_from == null || _to == null) return false;
 
     final now = DateTime.now();
 
-    final start = DateTime(
-      now.year,
-      now.month,
-      1,
-    );
+    final start = DateTime(now.year, now.month, 1);
 
-    final end = DateTime(
-      now.year,
-      now.month + 1,
-      1,
-    );
+    final end = DateTime(now.year, now.month + 1, 1);
 
     return _from == start && _to == end;
   }
@@ -109,37 +96,22 @@ class _CsvExportFilterSheetState
     final picked = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2000),
-      lastDate: DateTime(
-        now.year + 1,
-        12,
-        31,
-      ),
-      initialDateRange:
-      (_from != null && _to != null)
+      lastDate: DateTime(now.year + 1, 12, 31),
+      initialDateRange: (_from != null && _to != null)
           ? DateTimeRange(
-        start: _from!,
-        end: _to!.subtract(
-          const Duration(days: 1),
-        ),
-      )
+              start: _from!,
+              end: _to!.subtract(const Duration(days: 1)),
+            )
           : null,
     );
 
     if (picked == null) return;
 
     setState(() {
-      _from = DateTime(
-        picked.start.year,
-        picked.start.month,
-        picked.start.day,
-      );
+      _from = DateTime(picked.start.year, picked.start.month, picked.start.day);
 
       // End date is exclusive.
-      _to = DateTime(
-        picked.end.year,
-        picked.end.month,
-        picked.end.day + 1,
-      );
+      _to = DateTime(picked.end.year, picked.end.month, picked.end.day + 1);
     });
   }
 
@@ -147,17 +119,9 @@ class _CsvExportFilterSheetState
     final now = DateTime.now();
 
     setState(() {
-      _from = DateTime(
-        now.year,
-        now.month,
-        1,
-      );
+      _from = DateTime(now.year, now.month, 1);
 
-      _to = DateTime(
-        now.year,
-        now.month + 1,
-        1,
-      );
+      _to = DateTime(now.year, now.month + 1, 1);
     });
   }
 
@@ -202,9 +166,7 @@ class _CsvExportFilterSheetState
     }
 
     final filter = TransactionFilter(
-      search: _search.trim().isEmpty
-          ? null
-          : _search.trim(),
+      search: _search.trim().isEmpty ? null : _search.trim(),
       type: _type,
       categoryId: _categoryId,
       accountId: _accountId,
@@ -219,22 +181,18 @@ class _CsvExportFilterSheetState
 
   @override
   Widget build(BuildContext context) {
-    final categoriesProvider =
-    context.watch<CategoryProvider>();
+    final categoriesProvider = context.watch<CategoryProvider>();
 
-    final accounts =
-        context.watch<AccountProvider>().active;
+    final accounts = context.watch<AccountProvider>().active;
 
     final categories = [
       ...categoriesProvider.forType(TxType.expense),
       ...categoriesProvider.forType(TxType.income),
     ];
 
-    final categoryIds =
-    categories.map((c) => c.id).toSet();
+    final categoryIds = categories.map((c) => c.id).toSet();
 
-    final accountIds =
-    accounts.map((a) => a.id).toSet();
+    final accountIds = accounts.map((a) => a.id).toSet();
 
     if (!categoryIds.contains(_categoryId)) {
       _categoryId = null;
@@ -254,21 +212,18 @@ class _CsvExportFilterSheetState
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment:
-          CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               'CSV Export Filters',
-              style:
-              Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
 
             const SizedBox(height: 6),
 
             Text(
               'Choose which transactions to export.',
-              style:
-              Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
 
             const SizedBox(height: 20),
@@ -276,7 +231,6 @@ class _CsvExportFilterSheetState
             // ------------------------------------------------------
             // SEARCH
             // ------------------------------------------------------
-
             TextField(
               decoration: const InputDecoration(
                 labelText: 'Search',
@@ -294,12 +248,7 @@ class _CsvExportFilterSheetState
             // ------------------------------------------------------
             // TYPE
             // ------------------------------------------------------
-
-            Text(
-              'Type',
-              style:
-              Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('Type', style: Theme.of(context).textTheme.titleMedium),
 
             const SizedBox(height: 8),
 
@@ -317,8 +266,7 @@ class _CsvExportFilterSheetState
                 ),
                 ChoiceChip(
                   label: const Text('Income'),
-                  selected:
-                  _type == TxType.income,
+                  selected: _type == TxType.income,
                   onSelected: (_) {
                     setState(() {
                       _type = TxType.income;
@@ -327,8 +275,7 @@ class _CsvExportFilterSheetState
                 ),
                 ChoiceChip(
                   label: const Text('Expense'),
-                  selected:
-                  _type == TxType.expense,
+                  selected: _type == TxType.expense,
                   onSelected: (_) {
                     setState(() {
                       _type = TxType.expense;
@@ -343,12 +290,7 @@ class _CsvExportFilterSheetState
             // ------------------------------------------------------
             // DATE
             // ------------------------------------------------------
-
-            Text(
-              'Date',
-              style:
-              Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('Date', style: Theme.of(context).textTheme.titleMedium),
 
             const SizedBox(height: 8),
 
@@ -364,23 +306,16 @@ class _CsvExportFilterSheetState
                   },
                 ),
                 InputChip(
-                  avatar: const Icon(
-                    Icons.date_range,
-                    size: 18,
-                  ),
+                  avatar: const Icon(Icons.date_range, size: 18),
                   label: Text(
                     _hasDateRange
                         ? '${_formatDate(_from!)} - '
-                        '${_formatDate(_to!.subtract(
-                      const Duration(days: 1),
-                    ))}'
+                              '${_formatDate(_to!.subtract(const Duration(days: 1)))}'
                         : 'Date range',
                   ),
-                  selected:
-                  _hasDateRange && !_isThisMonth,
+                  selected: _hasDateRange && !_isThisMonth,
                   onPressed: _pickDateRange,
-                  onDeleted:
-                  _hasDateRange ? _clearDate : null,
+                  onDeleted: _hasDateRange ? _clearDate : null,
                 ),
               ],
             ),
@@ -390,7 +325,6 @@ class _CsvExportFilterSheetState
             // ------------------------------------------------------
             // CATEGORY
             // ------------------------------------------------------
-
             DropdownButtonFormField<String?>(
               initialValue: _categoryId,
               isExpanded: true,
@@ -408,7 +342,7 @@ class _CsvExportFilterSheetState
                     value: category.id,
                     child: Text(
                       '${category.name} • '
-                          '${category.type == TxType.expense ? 'Expense' : 'Income'}',
+                      '${category.type == TxType.expense ? 'Expense' : 'Income'}',
                     ),
                   ),
               ],
@@ -424,7 +358,6 @@ class _CsvExportFilterSheetState
             // ------------------------------------------------------
             // ACCOUNT
             // ------------------------------------------------------
-
             DropdownButtonFormField<String?>(
               initialValue: _accountId,
               isExpanded: true,
@@ -455,12 +388,7 @@ class _CsvExportFilterSheetState
             // ------------------------------------------------------
             // AMOUNT
             // ------------------------------------------------------
-
-            Text(
-              'Amount',
-              style:
-              Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('Amount', style: Theme.of(context).textTheme.titleMedium),
 
             const SizedBox(height: 8),
 
@@ -469,12 +397,10 @@ class _CsvExportFilterSheetState
                 Expanded(
                   child: TextField(
                     controller: _minCtrl,
-                    keyboardType:
-                    const TextInputType.numberWithOptions(
+                    keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    decoration:
-                    const InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Min amount',
                       border: OutlineInputBorder(),
                     ),
@@ -484,12 +410,10 @@ class _CsvExportFilterSheetState
                 Expanded(
                   child: TextField(
                     controller: _maxCtrl,
-                    keyboardType:
-                    const TextInputType.numberWithOptions(
+                    keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    decoration:
-                    const InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Max amount',
                       border: OutlineInputBorder(),
                     ),
@@ -502,10 +426,7 @@ class _CsvExportFilterSheetState
               const SizedBox(height: 8),
               Text(
                 _error!,
-                style: TextStyle(
-                  color:
-                  Theme.of(context).colorScheme.error,
-                ),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ],
 
@@ -514,13 +435,9 @@ class _CsvExportFilterSheetState
             // ------------------------------------------------------
             // BUTTONS
             // ------------------------------------------------------
-
             Row(
               children: [
-                TextButton(
-                  onPressed: _reset,
-                  child: const Text('Reset'),
-                ),
+                TextButton(onPressed: _reset, child: const Text('Reset')),
                 const Spacer(),
                 FilledButton.icon(
                   onPressed: _export,
