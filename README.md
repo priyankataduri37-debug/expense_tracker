@@ -188,31 +188,13 @@ You can install the APK on a compatible Android device for testing.
 
 ## 📸 Screenshots
 
-Add screenshots here to help visitors understand the application's interface and features.
+Dashboard
+Transactions
+Accounts                                     Savings Goals                                    
 
-Suggested screenshots:
-
-| Dashboard                              | Transactions                                    |
-| -------------------------------------- | ----------------------------------------------- |
-| Add a screenshot of the dashboard here | Add a screenshot of the transaction screen here |
-
-| Accounts                                     | Savings Goals                                     |
-| -------------------------------------------- | ------------------------------------------------- |
-| Add a screenshot of the accounts screen here | Add a screenshot of the savings goals screen here |
-
-| Recurring Transactions                        | Smart Insights                               |
-| --------------------------------------------- | -------------------------------------------- |
-| Add a screenshot of the recurring screen here | Add a screenshot of the insights screen here |
+Recurring Transactions                        Smart Insights
 
 To add screenshots, create a `screenshots/` folder in the repository and replace these placeholders with the actual image paths.
-
-For example:
-
-```markdown
-![Dashboard](screenshots/dashboard.png)
-```
-
----
 
 ## 🔮 Future Enhancements
 
