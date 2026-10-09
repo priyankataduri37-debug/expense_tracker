@@ -192,53 +192,39 @@ Explore the key features and interface of the Expense Tracker application.
 
 ### 🏠 Dashboard
 
-Get an overview of your finances, balances, and recent transactions.
-
-![Expense Tracker Dashboard](dashboard1.jpeg)
+![Expense Tracker Dashboard](screenshots/dashboard1.jpeg)
 
 ### 💳 Transaction Management
 
-View and manage your financial transactions.
+![Transaction History](screenshots/transactions1.jpeg)
 
-![Transaction History](transactions1.jpeg)
-
-![Transaction History - Additional View](transactiobd1.jpeg)
+![Transaction History - Additional View](screenshots/transactiobd1.jpeg)
 
 ### 📊 Analytics & Smart Insights
 
-Visualize your spending patterns and financial activity.
+![Analytics Overview](screenshots/analytics1.jpeg)
 
-![Analytics Overview](analytics1.jpeg)
-
-![Analytics Details](analytics2.jpeg)
+![Analytics Details](screenshots/analytics2.jpeg)
 
 ### 🏦 Accounts & Wallets
 
-Manage your accounts and monitor individual balances.
-
-![Accounts and Wallets](accounts.jpeg)
+![Accounts and Wallets](screenshots/accounts.jpeg)
 
 ### 🎯 Savings Goals
 
-Track your savings progress and financial targets.
+![Savings Goals - Overview](screenshots/savings1.jpeg)
 
-![Savings Goals - Overview](savings1.jpeg)
-
-![Savings Goals - Progress](savings2.jpeg)
+![Savings Goals - Progress](screenshots/savings2.jpeg)
 
 ### 💰 Budget Management
 
-Monitor your budget and spending progress.
-
-![Budget Management](budgets.jpeg)
+![Budget Management](screenshots/budgets.jpeg)
 
 ### ⚙️ Settings & Preferences
 
-Configure application settings and preferences.
+![Settings Overview](screenshots/settings1.jpeg)
 
-![Settings Overview](settings1.jpeg)
-
-![Settings Details](settings2.jpeg)
+![Settings Details](screenshots/settings2.jpeg)
 
 
 ## 🔮 Future Enhancements
