@@ -186,15 +186,60 @@ You can install the APK on a compatible Android device for testing.
 
 ---
 
-## 📸 Screenshots
+## 📸 Application Screenshots
 
-Dashboard
-Transactions
-Accounts                                     Savings Goals                                    
+Explore the key features and interface of the Expense Tracker application.
 
-Recurring Transactions                        Smart Insights
+### 🏠 Dashboard
 
-To add screenshots, create a `screenshots/` folder in the repository and replace these placeholders with the actual image paths.
+Get an overview of your finances, balances, and recent transactions.
+
+![Expense Tracker Dashboard](dashboard1.jpeg)
+
+### 💳 Transaction Management
+
+View and manage your financial transactions.
+
+![Transaction History](transactions1.jpeg)
+
+![Transaction History - Additional View](transactiobd1.jpeg)
+
+### 📊 Analytics & Smart Insights
+
+Visualize your spending patterns and financial activity.
+
+![Analytics Overview](analytics1.jpeg)
+
+![Analytics Details](analytics2.jpeg)
+
+### 🏦 Accounts & Wallets
+
+Manage your accounts and monitor individual balances.
+
+![Accounts and Wallets](accounts.jpeg)
+
+### 🎯 Savings Goals
+
+Track your savings progress and financial targets.
+
+![Savings Goals - Overview](savings1.jpeg)
+
+![Savings Goals - Progress](savings2.jpeg)
+
+### 💰 Budget Management
+
+Monitor your budget and spending progress.
+
+![Budget Management](budgets.jpeg)
+
+### ⚙️ Settings & Preferences
+
+Configure application settings and preferences.
+
+![Settings Overview](settings1.jpeg)
+
+![Settings Details](settings2.jpeg)
+
 
 ## 🔮 Future Enhancements
 
