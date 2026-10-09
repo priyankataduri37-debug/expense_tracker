@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/utils/insights_calculator.dart';
+import '../../data/local/enums.dart';
 import '../../data/repositories/analytics_repository.dart';
 
 enum AnalyticsPeriod { week, month, threeMonths, year }
@@ -13,6 +15,7 @@ class AnalyticsProvider extends ChangeNotifier {
 
   AnalyticsSummary? _summary;
   Map<String, String> _categoryNames = {};
+  List<SpendEntry> _spendEntries = [];
 
   bool _loading = false;
   String? _error;
@@ -20,6 +23,7 @@ class AnalyticsProvider extends ChangeNotifier {
   AnalyticsPeriod get period => _period;
   AnalyticsSummary? get summary => _summary;
   Map<String, String> get categoryNames => _categoryNames;
+  List<SpendEntry> get spendEntries => _spendEntries;
 
   bool get loading => _loading;
   String? get error => _error;
@@ -38,6 +42,7 @@ class AnalyticsProvider extends ChangeNotifier {
       );
 
       _categoryNames = await _repository.getCategoryNames();
+      _spendEntries = await _loadSpendEntries();
 
       _loading = false;
       notifyListeners();
@@ -46,6 +51,31 @@ class AnalyticsProvider extends ChangeNotifier {
       _error = e.toString();
       notifyListeners();
     }
+  }
+
+  /// Expenses from the earlier of (start of last month, 14 days ago) until
+  /// now: enough data for every insight, whatever period is selected.
+  Future<List<SpendEntry>> _loadSpendEntries() async {
+    final now = DateTime.now();
+    final lastMonthStart = DateTime(now.year, now.month - 1);
+    final twoWeeksAgo = DateTime(now.year, now.month, now.day - 13);
+    final start =
+    lastMonthStart.isBefore(twoWeeksAgo) ? lastMonthStart : twoWeeksAgo;
+
+    final rows = await _repository.getTransactions(
+      start: start,
+      end: DateTime(now.year, now.month, now.day + 1),
+    );
+
+    return [
+      for (final t in rows)
+        if (t.type == TxType.expense)
+          SpendEntry(
+            categoryId: t.categoryId,
+            amountMinor: t.amountMinor,
+            occurredAt: t.occurredAt,
+          ),
+    ];
   }
 
   Future<void> setPeriod(AnalyticsPeriod period) async {

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'analytics_provider.dart';
+import '../../core/utils/insights_calculator.dart';
 import '../../core/utils/money.dart';
+import '../../providers/budget_provider.dart';
 import '../../providers/settings_provider.dart';
 
 class AnalyticsScreen extends StatefulWidget {
@@ -112,160 +114,172 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     onAction: provider.load,
                   )
                 else if (summary == null)
-                  const _MessageCard(
-                    icon: Icons.analytics_outlined,
-                    message: 'No analytics available yet.',
-                    detail: 'Add a transaction to get started.',
-                  )
-                else ...[
-                  // Income and expense summary
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _SummaryCard(
-                          title: 'Income',
-                          amount: _money(summary.incomeMinor),
-                          icon: Icons.arrow_downward_rounded,
-                          color: Colors.green,
+                    const _MessageCard(
+                      icon: Icons.analytics_outlined,
+                      message: 'No analytics available yet.',
+                      detail: 'Add a transaction to get started.',
+                    )
+                  else ...[
+                      // Smart insights, calculated from the user's real data
+                      _InsightsCard(
+                        insights: generateInsights(
+                          expenses: provider.spendEntries,
+                          now: DateTime.now(),
+                          categoryName: provider.categoryName,
+                          formatMoney: _money,
+                          overallBudget: context.watch<BudgetProvider>().overall,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _SummaryCard(
-                          title: 'Expenses',
-                          amount: _money(summary.expenseMinor),
-                          icon: Icons.arrow_upward_rounded,
-                          color: colors.error,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                  // Net savings and savings rate
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Row(
+                      // Income and expense summary
+                      Row(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: colors.primaryContainer,
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Icon(
-                              Icons.savings_outlined,
-                              color: colors.onPrimaryContainer,
-                              size: 28,
+                          Expanded(
+                            child: _SummaryCard(
+                              title: 'Income',
+                              amount: _money(summary.incomeMinor),
+                              icon: Icons.arrow_downward_rounded,
+                              color: Colors.green,
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 12),
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Net savings',
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                            child: _SummaryCard(
+                              title: 'Expenses',
+                              amount: _money(summary.expenseMinor),
+                              icon: Icons.arrow_upward_rounded,
+                              color: colors.error,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Net savings and savings rate
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: colors.primaryContainer,
+                                  borderRadius: BorderRadius.circular(14),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _money(summary.netSavings),
-                                  style: Theme.of(context).textTheme.titleLarge
-                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                child: Icon(
+                                  Icons.savings_outlined,
+                                  color: colors.onPrimaryContainer,
+                                  size: 28,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Net savings',
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      _money(summary.netSavings),
+                                      style: Theme.of(context).textTheme.titleLarge
+                                          ?.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'Savings rate',
+                                    style: Theme.of(context).textTheme.labelSmall,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${(summary.savingsRate * 100).toStringAsFixed(1)}%',
+                                    style: Theme.of(context).textTheme.titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Transaction count
+                      Card(
+                        child: ListTile(
+                          leading: const Icon(Icons.receipt_long_outlined),
+                          title: const Text('Transactions'),
+                          subtitle: Text(
+                            'During ${_periodLabel(provider.period).toLowerCase()}',
+                          ),
+                          trailing: Text(
+                            '${summary.transactionCount}',
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      Text(
+                        'Spending by category',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      if (summary.categoryExpenses.isEmpty)
+                        const _MessageCard(
+                          icon: Icons.pie_chart_outline,
+                          message: 'No expenses in this period',
+                          detail: 'Your category breakdown will appear here.',
+                        )
+                      else
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 220,
+                                  child: PieChart(
+                                    PieChartData(
+                                      sectionsSpace: 3,
+                                      centerSpaceRadius: 42,
+                                      sections: _buildSections(
+                                        summary.categoryExpenses,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                ..._buildLegend(
+                                  context,
+                                  summary.categoryExpenses,
+                                  provider,
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Savings rate',
-                                style: Theme.of(context).textTheme.labelSmall,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${(summary.savingsRate * 100).toStringAsFixed(1)}%',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Transaction count
-                  Card(
-                    child: ListTile(
-                      leading: const Icon(Icons.receipt_long_outlined),
-                      title: const Text('Transactions'),
-                      subtitle: Text(
-                        'During ${_periodLabel(provider.period).toLowerCase()}',
-                      ),
-                      trailing: Text(
-                        '${summary.transactionCount}',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
                         ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
 
-                  Text(
-                    'Spending by category',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  if (summary.categoryExpenses.isEmpty)
-                    const _MessageCard(
-                      icon: Icons.pie_chart_outline,
-                      message: 'No expenses in this period',
-                      detail: 'Your category breakdown will appear here.',
-                    )
-                  else
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 220,
-                              child: PieChart(
-                                PieChartData(
-                                  sectionsSpace: 3,
-                                  centerSpaceRadius: 42,
-                                  sections: _buildSections(
-                                    summary.categoryExpenses,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            ..._buildLegend(
-                              context,
-                              summary.categoryExpenses,
-                              provider,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  if (provider.loading) ...[
-                    const SizedBox(height: 12),
-                    const LinearProgressIndicator(),
-                  ],
-                ],
+                      if (provider.loading) ...[
+                        const SizedBox(height: 12),
+                        const LinearProgressIndicator(),
+                      ],
+                    ],
                 const SizedBox(height: 24),
               ],
             ),
@@ -301,10 +315,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   List<Widget> _buildLegend(
-    BuildContext context,
-    Map<String, int> expenses,
-    AnalyticsProvider provider,
-  ) {
+      BuildContext context,
+      Map<String, int> expenses,
+      AnalyticsProvider provider,
+      ) {
     final entries = expenses.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
@@ -445,6 +459,83 @@ class _MessageCard extends StatelessWidget {
               const SizedBox(height: 12),
               FilledButton(onPressed: onAction, child: Text(actionLabel!)),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _InsightsCard extends StatelessWidget {
+  const _InsightsCard({required this.insights});
+
+  final List<Insight> insights;
+
+  IconData _icon(InsightKind kind) {
+    switch (kind) {
+      case InsightKind.budget:
+        return Icons.account_balance_wallet_outlined;
+      case InsightKind.weekChange:
+        return Icons.date_range;
+      case InsightKind.monthChange:
+        return Icons.calendar_month;
+      case InsightKind.topCategory:
+        return Icons.category_outlined;
+      case InsightKind.dailyAverage:
+        return Icons.today;
+    }
+  }
+
+  Color _color(BuildContext context, InsightTone tone) {
+    switch (tone) {
+      case InsightTone.good:
+        return Colors.green;
+      case InsightTone.warning:
+        return Colors.orange;
+      case InsightTone.info:
+        return Theme.of(context).colorScheme.primary;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.lightbulb_outline, color: theme.colorScheme.primary),
+                const SizedBox(width: 8),
+                Text('Smart insights', style: theme.textTheme.titleMedium),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (insights.isEmpty)
+              Text(
+                'Add a few expenses to see insights.',
+                style: theme.textTheme.bodyMedium,
+              )
+            else
+              for (final i in insights)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        _icon(i.kind),
+                        size: 20,
+                        color: _color(context, i.tone),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(child: Text(i.message)),
+                    ],
+                  ),
+                ),
           ],
         ),
       ),
