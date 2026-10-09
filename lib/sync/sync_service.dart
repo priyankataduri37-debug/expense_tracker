@@ -21,18 +21,14 @@ class SyncService {
   bool _pushing = false;
   bool _pulling = false;
 
-  /// Re-fetch the last 2 seconds again, in case a change was saved by the
-  /// server a moment after our last pull. Merging the same change twice is harmless.
   static const _overlapMicros = 2000000;
 
-  /// Pull first (so conflicts are merged), then push. Never throws.
   Future<bool> sync() async {
     final pulled = await pull();
     final pushed = await push();
     return pulled && pushed;
   }
 
-  // ---------------------------------------------------------------- PULL
 
   Future<bool> pull() async {
     final uid = _userId();
@@ -52,7 +48,6 @@ class SyncService {
         await _mergeOne(d.data);
         if (d.serverMicros > newest) newest = d.serverMicros;
       }
-      // Move the bookmark only after every document was merged.
       if (docs.isNotEmpty) await _meta.setLastSyncMicros(uid, newest);
       return true;
     } on TimeoutException {
@@ -74,7 +69,6 @@ class SyncService {
     final baseOfCloud = jsonEncode(remote);
     final local = await _repo.findById(id);
 
-    // New to this phone: just save it.
     if (local == null) {
       await _repo.insertFromCloud(remote, baseJson: baseOfCloud);
       return;
@@ -98,7 +92,6 @@ class SyncService {
     );
   }
 
-  // ---------------------------------------------------------------- PUSH
 
   Future<bool> push() async {
     final uid = _userId();
@@ -110,7 +103,6 @@ class SyncService {
       final rows = await _repo.pendingRows();
 
       for (final row in rows) {
-        // Deleted before it ever reached the cloud: nothing to tell the cloud.
         if (row.deletedAt != null && row.baseJson == null) {
           await _repo.purge(row.id);
           continue;

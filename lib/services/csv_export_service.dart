@@ -18,49 +18,38 @@ class CsvExportService {
   }) async {
     final uid = _userId();
 
-    // ------------------------------------------------------------
-    // Build database query using the selected filters.
-    // ------------------------------------------------------------
-
     final query = _db.select(_db.transactions)
       ..where((t) {
         Expression<bool> condition =
             t.userId.equals(uid) & t.deletedAt.isNull();
 
-        // Income / Expense
         if (filter.type != null) {
           condition = condition & t.type.equalsValue(filter.type!);
         }
 
-        // Category
         if (filter.categoryId != null) {
           condition = condition & t.categoryId.equals(filter.categoryId!);
         }
 
-        // Account
         if (filter.accountId != null) {
           condition = condition & t.accountId.equals(filter.accountId!);
         }
 
-        // Minimum amount
         if (filter.minMinor != null) {
           condition =
               condition & t.amountMinor.isBiggerOrEqualValue(filter.minMinor!);
         }
 
-        // Maximum amount
         if (filter.maxMinor != null) {
           condition =
               condition & t.amountMinor.isSmallerOrEqualValue(filter.maxMinor!);
         }
 
-        // Date from
         if (filter.from != null) {
           condition =
               condition & t.occurredAt.isBiggerOrEqualValue(filter.from!);
         }
 
-        // Date to is EXCLUSIVE in TransactionFilter.
         if (filter.to != null) {
           condition = condition & t.occurredAt.isSmallerThanValue(filter.to!);
         }
@@ -74,11 +63,7 @@ class CsvExportService {
 
     var transactions = await query.get();
 
-    // ------------------------------------------------------------
-    // Load categories.
-    // Default categories are owned by "local".
-    // Custom categories belong to the signed-in user.
-    // ------------------------------------------------------------
+
 
     final categories =
         await (_db.select(_db.categories)..where(
@@ -92,9 +77,9 @@ class CsvExportService {
       for (final category in categories) category.id: category.name,
     };
 
-    // ------------------------------------------------------------
-    // Load accounts.
-    // ------------------------------------------------------------
+
+
+
 
     final accounts = await (_db.select(
       _db.accounts,
@@ -104,12 +89,12 @@ class CsvExportService {
       for (final account in accounts) account.id: account.name,
     };
 
-    // ------------------------------------------------------------
-    // Search filter.
-    //
-    // History supports searching note, category or amount.
-    // The other filters above are handled directly by SQLite.
-    // ------------------------------------------------------------
+
+
+
+
+
+
 
     final search = filter.search?.trim().toLowerCase();
 
@@ -128,9 +113,9 @@ class CsvExportService {
       }).toList();
     }
 
-    // ------------------------------------------------------------
-    // Build CSV.
-    // ------------------------------------------------------------
+
+
+
 
     final buffer = StringBuffer();
 
@@ -159,9 +144,9 @@ class CsvExportService {
       );
     }
 
-    // ------------------------------------------------------------
-    // Save file.
-    // ------------------------------------------------------------
+
+
+
 
     final timestamp = DateTime.now()
         .toIso8601String()

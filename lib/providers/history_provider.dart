@@ -30,12 +30,10 @@ class HistoryProvider extends ChangeNotifier {
   bool get isLoadingMore => _loadingMore;
   String? get error => _error;
 
-  /// If we got a full page back, there may be more rows behind it.
   bool get hasMore => _items.length >= _limit;
 
   void _subscribe() {
     _sub?.cancel();
-    // The old list stays on screen until the new one arrives (no flicker).
     _sub = _repo
         .watchFiltered(_filter, limit: _limit)
         .listen(
@@ -55,7 +53,6 @@ class HistoryProvider extends ChangeNotifier {
         );
   }
 
-  /// A new filter always starts again from the first page.
   void setFilter(TransactionFilter f) {
     _filter = f;
     _limit = pageSize;
@@ -65,7 +62,6 @@ class HistoryProvider extends ChangeNotifier {
 
   void clearFilters() => setFilter(TransactionFilter.none);
 
-  /// Waits 300 ms after the last keystroke so we don't query on every letter.
   void setSearch(String text) {
     _searchDebounce?.cancel();
     _searchDebounce = Timer(const Duration(milliseconds: 300), () {
@@ -74,7 +70,6 @@ class HistoryProvider extends ChangeNotifier {
     });
   }
 
-  /// Called when the list is scrolled near the bottom.
   void loadMore() {
     if (!hasMore || _loadingMore || _loading) return;
     _loadingMore = true;
@@ -84,7 +79,6 @@ class HistoryProvider extends ChangeNotifier {
   }
 
   Future<void> delete(String id) async {
-    // Remove it right away so the swipe animation finishes cleanly.
     _items = _items.where((t) => t.id != id).toList();
     notifyListeners();
     await _repo.delete(id);

@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'providers/goal_provider.dart';
 
 import 'services/csv_export_service.dart';
+import 'data/repositories/recurring_repository.dart';
+import 'providers/recurring_provider.dart';
 import 'data/repositories/budget_repository.dart';
 import 'providers/budget_provider.dart';
 import 'providers/history_provider.dart';
@@ -47,6 +49,12 @@ Future<void> main() async {
   final authProvider = AuthProvider(AuthService());
 
   final repo = TransactionRepository(db, userId: () => authProvider.userId);
+
+  final recurringRepo = RecurringRepository(
+    db,
+    repo,
+    userId: () => authProvider.userId,
+  );
 
   final accountRepo = AccountRepository(db);
 
@@ -91,6 +99,7 @@ Future<void> main() async {
         Provider<SyncService>.value(value: syncService),
         Provider<AppDatabase>.value(value: db),
         Provider<TransactionRepository>.value(value: repo),
+        Provider<RecurringRepository>.value(value: recurringRepo),
         Provider<BudgetRepository>.value(value: budgetRepo),
         Provider<BackupService>.value(value: backupService),
         Provider<CsvExportService>.value(value: csvExportService),
@@ -139,6 +148,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) =>
               TransactionProvider(ctx.read<TransactionRepository>()),
+        ),
+        ChangeNotifierProvider<RecurringProvider>(
+          lazy: false,
+          create: (ctx) => RecurringProvider(
+            ctx.read<RecurringRepository>(),
+          ),
         ),
         ChangeNotifierProvider(
           create: (ctx) => DashboardProvider(ctx.read<TransactionRepository>()),

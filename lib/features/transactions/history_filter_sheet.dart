@@ -9,7 +9,7 @@ import '../../providers/history_provider.dart';
 Future<void> showHistoryFilterSheet(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,
-    isScrollControlled: true, // lets the sheet rise above the keyboard
+    isScrollControlled: true,
     showDragHandle: true,
     builder: (_) => const _FilterSheet(),
   );
@@ -32,7 +32,7 @@ class _FilterSheetState extends State<_FilterSheet> {
   @override
   void initState() {
     super.initState();
-    // Start from whatever filter is already active.
+
     final f = context.read<HistoryProvider>().filter;
     _categoryId = f.categoryId;
     _accountId = f.accountId;
@@ -47,7 +47,7 @@ class _FilterSheetState extends State<_FilterSheet> {
     super.dispose();
   }
 
-  // 2500 -> "25", 2550 -> "25.50"
+
   String _toText(int? minor) {
     if (minor == null) return '';
     return minor % 100 == 0
@@ -104,7 +104,7 @@ class _FilterSheetState extends State<_FilterSheet> {
     final cats = context.watch<CategoryProvider>();
     final accounts = context.watch<AccountProvider>().active;
 
-    // Names like "Other" exist for both income and expense, so label the type.
+
     final categories = [
       ...cats.forType(TxType.expense),
       ...cats.forType(TxType.income),
@@ -112,7 +112,7 @@ class _FilterSheetState extends State<_FilterSheet> {
     final categoryIds = categories.map((c) => c.id).toSet();
     final accountIds = accounts.map((a) => a.id).toSet();
 
-    // If a saved id no longer exists (archived), fall back to "All".
+
     final categoryValue = categoryIds.contains(_categoryId)
         ? _categoryId
         : null;

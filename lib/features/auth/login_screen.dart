@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _submit() async {
-    // Run the validators. Stop if any field is invalid.
+
     if (!_formKey.currentState!.validate()) return;
 
     final auth = context.read<AuthProvider>();
@@ -38,8 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       await auth.signIn(email, pass);
     }
-    // No navigation here. When login succeeds, AuthProvider changes status
-    // and the app switches screens by itself (we wire that up next).
+
+
   }
 
   void _toggleMode() {

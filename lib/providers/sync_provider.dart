@@ -22,7 +22,7 @@ class SyncProvider extends ChangeNotifier {
   final TransactionRepository _repo;
   final Connectivity _connectivity;
 
-  /// False before login: there is no account to sync with.
+
   final bool enabled;
 
   SyncState _state = SyncState.idle;
@@ -47,7 +47,7 @@ class SyncProvider extends ChangeNotifier {
       r.any((e) => e != ConnectivityResult.none);
 
   Future<void> _start() async {
-    // A new local change (the pending count went up) -> sync soon.
+
     _pendingSub = _repo.watchPendingCount().listen((n) {
       final increased = n > _pending;
       _pending = n;
@@ -60,7 +60,7 @@ class SyncProvider extends ChangeNotifier {
     _online = _isOnline(first);
     notifyListeners();
 
-    // Internet came back -> sync.
+
     _connSub = _connectivity.onConnectivityChanged.listen((r) {
       final wasOnline = _online;
       _online = _isOnline(r);
@@ -70,7 +70,7 @@ class SyncProvider extends ChangeNotifier {
 
     _periodic = Timer.periodic(const Duration(minutes: 5), (_) => syncNow());
 
-    syncNow(); // app start / right after login
+    syncNow();
   }
 
   void _scheduleSync() {
@@ -86,7 +86,7 @@ class SyncProvider extends ChangeNotifier {
   Future<void> syncNow() async {
     if (!enabled || _disposed || !_online) return;
     if (_state == SyncState.syncing) {
-      _runAgain = true; // something changed during this sync
+      _runAgain = true;
       return;
     }
 

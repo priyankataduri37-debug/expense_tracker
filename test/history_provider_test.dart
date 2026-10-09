@@ -11,7 +11,6 @@ void main() {
   late TransactionRepository repo;
   late HistoryProvider p;
 
-  // Gives the database stream time to deliver its next list.
   Future<void> settle() => Future.delayed(const Duration(milliseconds: 80));
 
   List<String> notes() => p.items.map((r) => r.note).toList();
@@ -20,7 +19,6 @@ void main() {
     db = AppDatabase(NativeDatabase.memory());
     repo = TransactionRepository(db, userId: () => 'u1');
 
-    // tx0..tx4 on Oct 1..5. Even numbers are expenses, odd are income.
     for (var i = 0; i < 5; i++) {
       await repo.add(
         amountMinor: 1000 + i,
@@ -68,9 +66,9 @@ void main() {
     await settle();
     expect(p.items, hasLength(4));
 
-    p.setFilter(const TransactionFilter(type: TxType.expense)); // 3 rows exist
+    p.setFilter(const TransactionFilter(type: TxType.expense));
     await settle();
-    expect(p.items, hasLength(2)); // back to one page
+    expect(p.items, hasLength(2));
   });
 
   test('clearFilters brings everything back', () async {
@@ -83,9 +81,9 @@ void main() {
   });
 
   test('delete hides the row immediately, restore brings it back', () async {
-    final id = p.items.first.id; // tx4
+    final id = p.items.first.id;
     final future = p.delete(id);
-    expect(p.items.any((r) => r.id == id), isFalse); // instant
+    expect(p.items.any((r) => r.id == id), isFalse);
     await future;
     await settle();
     expect(notes(), ['tx3', 'tx2']);

@@ -110,7 +110,7 @@ class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
     setState(() {
       _from = DateTime(picked.start.year, picked.start.month, picked.start.day);
 
-      // End date is exclusive.
+
       _to = DateTime(picked.end.year, picked.end.month, picked.end.day + 1);
     });
   }
@@ -228,9 +228,9 @@ class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
 
             const SizedBox(height: 20),
 
-            // ------------------------------------------------------
-            // SEARCH
-            // ------------------------------------------------------
+
+
+
             TextField(
               decoration: const InputDecoration(
                 labelText: 'Search',
@@ -245,9 +245,9 @@ class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
 
             const SizedBox(height: 16),
 
-            // ------------------------------------------------------
-            // TYPE
-            // ------------------------------------------------------
+
+
+
             Text('Type', style: Theme.of(context).textTheme.titleMedium),
 
             const SizedBox(height: 8),
@@ -287,9 +287,9 @@ class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
 
             const SizedBox(height: 16),
 
-            // ------------------------------------------------------
-            // DATE
-            // ------------------------------------------------------
+
+
+
             Text('Date', style: Theme.of(context).textTheme.titleMedium),
 
             const SizedBox(height: 8),
@@ -322,9 +322,9 @@ class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
 
             const SizedBox(height: 16),
 
-            // ------------------------------------------------------
-            // CATEGORY
-            // ------------------------------------------------------
+
+
+
             DropdownButtonFormField<String?>(
               initialValue: _categoryId,
               isExpanded: true,
@@ -355,9 +355,9 @@ class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
 
             const SizedBox(height: 16),
 
-            // ------------------------------------------------------
-            // ACCOUNT
-            // ------------------------------------------------------
+
+
+
             DropdownButtonFormField<String?>(
               initialValue: _accountId,
               isExpanded: true,
@@ -385,9 +385,9 @@ class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
 
             const SizedBox(height: 16),
 
-            // ------------------------------------------------------
-            // AMOUNT
-            // ------------------------------------------------------
+
+
+
             Text('Amount', style: Theme.of(context).textTheme.titleMedium),
 
             const SizedBox(height: 8),
@@ -432,9 +432,9 @@ class _CsvExportFilterSheetState extends State<_CsvExportFilterSheet> {
 
             const SizedBox(height: 20),
 
-            // ------------------------------------------------------
-            // BUTTONS
-            // ------------------------------------------------------
+
+
+
             Row(
               children: [
                 TextButton(onPressed: _reset, child: const Text('Reset')),

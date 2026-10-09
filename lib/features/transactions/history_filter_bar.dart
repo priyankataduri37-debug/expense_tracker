@@ -34,7 +34,7 @@ class _HistoryFilterBarState extends State<HistoryFilterBar> {
   @override
   void initState() {
     super.initState();
-    // Keep the text if the screen is rebuilt while a search is active.
+
     _searchCtrl.text = context.read<HistoryProvider>().filter.search ?? '';
   }
 
@@ -62,7 +62,7 @@ class _HistoryFilterBarState extends State<HistoryFilterBar> {
     );
     if (picked == null) return;
 
-    // The filter's end date is exclusive, so add one day to the picked end.
+
     h.setFilter(
       f.copyWith(
         from: DateTime(picked.start.year, picked.start.month, picked.start.day),
@@ -117,7 +117,7 @@ class _HistoryFilterBarState extends State<HistoryFilterBar> {
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
             onChanged: (v) {
-              setState(() {}); // refreshes the clear (x) button
+              setState(() {});
               h.setSearch(v);
             },
           ),

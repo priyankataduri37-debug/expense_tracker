@@ -26,7 +26,7 @@ class TransactionsScreen extends StatelessWidget {
 
       body = NotificationListener<ScrollNotification>(
         onNotification: (n) {
-          // Within 300 px of the bottom -> load the next page.
+
           if (n.metrics.pixels >= n.metrics.maxScrollExtent - 300) {
             context.read<HistoryProvider>().loadMore();
           }
@@ -52,7 +52,7 @@ class TransactionsScreen extends StatelessWidget {
             final t = h.items[i];
             return Dismissible(
               key: ValueKey(t.id),
-              // Swipe right -> Edit. Swipe left -> Delete.
+
               background: Container(
                 color: scheme.primaryContainer,
                 alignment: Alignment.centerLeft,
@@ -68,7 +68,7 @@ class TransactionsScreen extends StatelessWidget {
               confirmDismiss: (direction) async {
                 if (direction == DismissDirection.startToEnd) {
                   await showTransactionSheet(context, existing: t);
-                  return false; // keep the row; the DB stream refreshes it
+                  return false;
                 }
                 return true;
               },

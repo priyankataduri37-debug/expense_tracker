@@ -23,8 +23,8 @@ Map<String, dynamic> tx({
 void main() {
   test('different fields changed on each device: both changes survive', () {
     final base = tx();
-    final local = tx(note: 'Dinner', updatedAt: 2000); // Device A: note
-    final remote = tx(amount: 3000, updatedAt: 3000); // Device B: amount
+    final local = tx(note: 'Dinner', updatedAt: 2000);
+    final remote = tx(amount: 3000, updatedAt: 3000);
 
     final r = mergeTransaction(base: base, local: local, remote: remote);
 
@@ -43,7 +43,7 @@ void main() {
     );
     expect(r.merged['amountMinor'], 3000);
     expect(r.conflictedFields, ['amountMinor']);
-    expect(r.differsFromRemote, isFalse); // nothing to push back
+    expect(r.differsFromRemote, isFalse);
   });
 
   test('same field changed on both: newer updatedAt wins (local newer)', () {
@@ -53,7 +53,7 @@ void main() {
       remote: tx(amount: 3000, updatedAt: 3000),
     );
     expect(r.merged['amountMinor'], 2500);
-    expect(r.differsFromRemote, isTrue); // must push our winner
+    expect(r.differsFromRemote, isTrue);
   });
 
   test('only the cloud changed: take the cloud version, nothing to push', () {

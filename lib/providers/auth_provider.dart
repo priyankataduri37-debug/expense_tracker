@@ -29,7 +29,6 @@ class AuthProvider extends ChangeNotifier {
   String? get error => _error;
   String? get email => _user?.email;
 
-  /// The id every new row is stamped with. Before login it is 'local'.
   String get userId => _user?.uid ?? 'local';
 
   Future<bool> signIn(String email, String password) =>
@@ -45,7 +44,6 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Runs a login action, tracks the busy flag and turns errors into text.
   Future<bool> _run(Future<void> Function() action) async {
     _busy = true;
     _error = null;

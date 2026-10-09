@@ -73,7 +73,7 @@ class TransactionProvider extends ChangeNotifier {
   );
 
   Future<void> delete(String id) async {
-    // Dismissible needs the item gone from the list immediately.
+
     _items = _items.where((t) => t.id != id).toList();
     notifyListeners();
     await _repo.delete(id);

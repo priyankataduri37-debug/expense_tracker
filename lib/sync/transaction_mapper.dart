@@ -1,7 +1,6 @@
 import '../data/local/database.dart';
 
-/// The fields that can be edited by the user. The conflict resolver compares
-/// exactly these, one by one (field-level merge).
+
 const transactionFields = [
   'amountMinor',
   'type',
@@ -12,8 +11,7 @@ const transactionFields = [
   'deletedAt',
 ];
 
-/// Row -> plain map. Dates become epoch milliseconds (UTC), enums become text,
-/// so the map is safe to store as JSON and to send to Firestore.
+
 Map<String, dynamic> transactionToMap(TransactionRow r) => {
   'id': r.id,
   'userId': r.userId,

@@ -100,7 +100,7 @@ class BudgetCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+
             Row(
               children: [
                 const Icon(Icons.account_balance_wallet_outlined),
@@ -121,7 +121,6 @@ class BudgetCard extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Spent / budget
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -140,7 +139,6 @@ class BudgetCard extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Progress bar
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: LinearProgressIndicator(
@@ -153,7 +151,6 @@ class BudgetCard extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // Percentage
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -175,7 +172,6 @@ class BudgetCard extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Remaining / exceeded
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
@@ -207,7 +203,6 @@ class BudgetCard extends StatelessWidget {
               ),
             ),
 
-            // Warning
             if (warning != null) ...[
               const SizedBox(height: 12),
               Text(warning, style: Theme.of(context).textTheme.bodyMedium),

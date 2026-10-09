@@ -69,7 +69,7 @@ class _AppShellState extends State<AppShell> {
           children: [
             _navItem(0, Icons.dashboard_outlined, Icons.dashboard, 'Home'),
             _navItem(1, Icons.pie_chart_outline, Icons.pie_chart, 'Analytics'),
-            const SizedBox(width: 56), // room for the + button
+            const SizedBox(width: 56),
             _navItem(
               2,
               Icons.receipt_long_outlined,

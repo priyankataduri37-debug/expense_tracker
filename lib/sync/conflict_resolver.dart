@@ -10,13 +10,10 @@ class MergeResult {
 
   final Map<String, dynamic> merged;
 
-  /// Fields that BOTH sides changed to different values (settled by last-write-wins).
   final List<String> conflictedFields;
 
-  /// True -> the merged row must be saved into the local database.
   final bool differsFromLocal;
 
-  /// True -> the merged row must be pushed back to the cloud.
   final bool differsFromRemote;
 }
 
@@ -33,7 +30,6 @@ MergeResult mergeTransaction({
     final r = remote[f];
     if (l == r) continue;
 
-    // No base means no common ancestor, so we treat both sides as changed.
     final localChanged = base == null ? true : l != base[f];
     final remoteChanged = base == null ? true : r != base[f];
 
@@ -69,7 +65,5 @@ dynamic _lastWriteWins(
   final ru = remote['updatedAt'] as int;
   if (lu > ru) return l;
   if (ru > lu) return r;
-  // Exact tie: both devices must pick the SAME winner or they would swap
-  // values forever. Comparing the values themselves is the same on both sides.
   return '$l'.compareTo('$r') >= 0 ? l : r;
 }

@@ -3,9 +3,6 @@ import 'package:expense_tracker/core/utils/insights_calculator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  // Wednesday 15 July 2026.
-  // "This week" = 9-15 July, "last week" = 2-8 July,
-  // "last month, same period" = 1-15 June.
   final now = DateTime(2026, 7, 15, 12);
 
   String fmt(int minor) => 'M$minor';
@@ -42,8 +39,8 @@ void main() {
   group('week vs last week', () {
     test('spending more is reported as a percentage increase', () {
       final result = run([
-        spend('exp_food', 1000, DateTime(2026, 7, 3)), // last week
-        spend('exp_food', 1200, DateTime(2026, 7, 10)), // this week
+        spend('exp_food', 1000, DateTime(2026, 7, 3)),
+        spend('exp_food', 1200, DateTime(2026, 7, 10)),
       ]);
 
       final insight = find(result, InsightKind.weekChange)!;
@@ -72,9 +69,9 @@ void main() {
   group('this month vs last month', () {
     test('only compares the same number of days', () {
       final result = run([
-        spend('exp_food', 1200, DateTime(2026, 7, 5)), // this month, so far
-        spend('exp_food', 1000, DateTime(2026, 6, 5)), // same days last month
-        spend('exp_food', 9000, DateTime(2026, 6, 25)), // after day 15: ignored
+        spend('exp_food', 1200, DateTime(2026, 7, 5)),
+        spend('exp_food', 1000, DateTime(2026, 6, 5)),
+        spend('exp_food', 9000, DateTime(2026, 6, 25)),
       ]);
 
       final insight = find(result, InsightKind.monthChange)!;
@@ -134,7 +131,6 @@ void main() {
       spend('exp_food', 1500, DateTime(2026, 7, 10)),
     ]);
 
-    // 4500 over 15 days = 300 per day.
     expect(
       find(result, InsightKind.dailyAverage)!.message,
       'Your average daily spending this month is M300.',

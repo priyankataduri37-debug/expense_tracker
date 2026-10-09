@@ -21,7 +21,7 @@ mixin SyncColumns on Table {
 @TableIndex(name: 'idx_tx_account', columns: {#accountId})
 @TableIndex(name: 'idx_tx_sync', columns: {#syncStatus})
 class Transactions extends Table with SyncColumns {
-  IntColumn get amountMinor => integer()(); // 2500 = 25.00
+  IntColumn get amountMinor => integer()();
   TextColumn get type => textEnum<TxType>()();
   TextColumn get categoryId => text()();
   TextColumn get accountId => text()();

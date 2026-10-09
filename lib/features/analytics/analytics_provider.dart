@@ -53,8 +53,7 @@ class AnalyticsProvider extends ChangeNotifier {
     }
   }
 
-  /// Expenses from the earlier of (start of last month, 14 days ago) until
-  /// now: enough data for every insight, whatever period is selected.
+
   Future<List<SpendEntry>> _loadSpendEntries() async {
     final now = DateTime.now();
     final lastMonthStart = DateTime(now.year, now.month - 1);

@@ -29,7 +29,7 @@ class DashboardProvider extends ChangeNotifier {
   bool get isLoading => _loading;
   int get incomeMinor => _totals.income;
   int get expenseMinor => _totals.expense;
-  int get balanceMinor => _totals.balance; // income - expenses
+  int get balanceMinor => _totals.balance;
   List<TransactionRow> get recent => _recent;
 
   @override

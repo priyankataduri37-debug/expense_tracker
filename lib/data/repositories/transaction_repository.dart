@@ -8,8 +8,8 @@ import '../models/transaction_filter.dart';
 class TransactionTotals {
   const TransactionTotals({required this.income, required this.expense});
 
-  final int income; // minor units
-  final int expense; // minor units
+  final int income;
+  final int expense;
   int get balance => income - expense;
 }
 
@@ -29,7 +29,6 @@ class TransactionRepository {
     _db.transactions,
   )..where((t) => t.id.equals(id))).getSingleOrNull();
 
-  // READ: newest first, hide soft-deleted rows
   Stream<List<TransactionRow>> watchAll() {
     final query = _db.select(_db.transactions)
       ..where((t) => t.deletedAt.isNull() & t.userId.equals(_userId()))
@@ -37,9 +36,7 @@ class TransactionRepository {
     return query.watch();
   }
 
-  /// Filtered, searched and windowed list for the History screen.
-  /// [limit] is how many rows to load. The screen raises it as the user
-  /// scrolls, so only what is needed is ever read (10,000+ rows stay fast).
+
   Stream<List<TransactionRow>> watchFiltered(
     TransactionFilter f, {
     required int limit,
@@ -65,7 +62,6 @@ class TransactionRepository {
     final q = f.search?.trim() ?? '';
     if (q.isNotEmpty) {
       final like = '%$q%';
-      // Search by category NAME without a join: find matching category ids first.
       final matchingCategories = _db.selectOnly(_db.categories)
         ..addColumns([_db.categories.id])
         ..where(_db.categories.name.like(like));
@@ -91,7 +87,6 @@ class TransactionRepository {
     return query.watch();
   }
 
-  /// Latest [limit] transactions (dashboard).
   Stream<List<TransactionRow>> watchRecent(int limit) {
     final query = _db.select(_db.transactions)
       ..where((t) => t.deletedAt.isNull() & t.userId.equals(_userId()))
@@ -100,7 +95,6 @@ class TransactionRepository {
     return query.watch();
   }
 
-  /// Total income and expense, calculated by SQLite (not in Dart).
   Stream<TransactionTotals> watchTotals() {
     final t = _db.transactions;
     final income = t.amountMinor.sum(filter: t.type.equalsValue(TxType.income));
@@ -118,13 +112,11 @@ class TransactionRepository {
     );
   }
 
-  /// This month's expenses per category, in minor units (for budgets).
-  /// Overall spending = the sum of the map's values.
   Stream<Map<String, int>> watchMonthlyExpenseByCategory() {
     final t = _db.transactions;
     final now = _clock();
     final start = DateTime(now.year, now.month);
-    final end = DateTime(now.year, now.month + 1); // exclusive
+    final end = DateTime(now.year, now.month + 1);
 
     final total = t.amountMinor.sum();
     final query = _db.selectOnly(t)
@@ -145,7 +137,6 @@ class TransactionRepository {
     );
   }
 
-  // CREATE
   Future<String> add({
     required int amountMinor,
     required TxType type,
@@ -153,6 +144,7 @@ class TransactionRepository {
     required String accountId,
     required DateTime occurredAt,
     String note = '',
+    String? recurringRuleId,
   }) async {
     if (amountMinor <= 0) throw ArgumentError('Amount must be positive');
     final id = _uuid.v4();
@@ -172,12 +164,12 @@ class TransactionRepository {
             accountId: accountId,
             occurredAt: occurredAt,
             note: Value(note),
+            recurringRuleId: Value(recurringRuleId),
           ),
         );
     return id;
   }
 
-  // UPDATE
   Future<void> update(
     String id, {
     int? amountMinor,
@@ -212,10 +204,6 @@ class TransactionRepository {
     );
   }
 
-  // SOFT DELETE
-  // Note for the sync engine: a row with baseJson == null was never uploaded,
-  // so when it is pendingDelete the engine should just purge it locally
-  // instead of calling the cloud.
   Future<void> delete(String id) async {
     final row = await _find(id);
     if (row == null || row.deletedAt != null) return;
@@ -229,11 +217,9 @@ class TransactionRepository {
     );
   }
 
-  // UNDO DELETE
   Future<void> restore(String id) async {
     final row = await _find(id);
     if (row == null || row.deletedAt == null) return;
-    // Never uploaded (baseJson == null) -> it is still a create.
     final status = row.baseJson == null
         ? SyncStatus.pendingCreate
         : SyncStatus.pendingUpdate;
@@ -246,10 +232,7 @@ class TransactionRepository {
     );
   }
 
-  // ---------- helpers for the sync engine ----------
 
-  /// Rows of the current user that the cloud has not confirmed yet,
-  /// oldest change first. 'failed' rows are included so they get retried.
   Future<List<TransactionRow>> pendingRows() =>
       (_db.select(_db.transactions)
             ..where(
@@ -265,16 +248,13 @@ class TransactionRepository {
             ..orderBy([(t) => OrderingTerm.asc(t.updatedAt)]))
           .get();
 
-  /// Called after a successful upload. [baseJson] is the version that now
-  /// exists in the cloud. The row only becomes 'synced' if the user did not
-  /// edit it while the upload was running; otherwise it stays pending.
+
   Future<bool> markSynced(
     String id, {
     required DateTime expectedUpdatedAt,
     required String baseJson,
   }) {
     return _db.transaction(() async {
-      // The cloud now has this version, so remember it as the merge base.
       await (_db.update(_db.transactions)..where((t) => t.id.equals(id))).write(
         TransactionsCompanion(baseJson: Value(baseJson)),
       );
@@ -297,7 +277,6 @@ class TransactionRepository {
         const TransactionsCompanion(syncStatus: Value(SyncStatus.failed)),
       );
 
-  /// How many of this user's rows are waiting to reach the cloud.
   Stream<int> watchPendingCount() {
     final t = _db.transactions;
     final count = t.id.count();
@@ -315,14 +294,12 @@ class TransactionRepository {
     return query.map((r) => r.read(count) ?? 0).watchSingle();
   }
 
-  /// Permanently removes a row (only for rows the cloud never saw).
   Future<void> purge(String id) =>
       (_db.delete(_db.transactions)..where((t) => t.id.equals(id))).go();
 
   Future<TransactionRow?> findById(String id) => _find(id);
 
-  /// A document that exists in the cloud but not on this phone.
-  /// Deleted documents are ignored: there is nothing to show.
+
   Future<void> insertFromCloud(
     Map<String, dynamic> m, {
     required String baseJson,
@@ -348,10 +325,7 @@ class TransactionRepository {
         );
   }
 
-  /// Saves the output of the conflict resolver for a row that exists locally.
-  /// [needsPush] means the merged row differs from the cloud, so it must be
-  /// uploaded again. Returns false (and writes nothing) if the user edited the
-  /// row while we were merging; the next sync simply redoes it.
+
   Future<bool> applyMerged(
     Map<String, dynamic> merged, {
     required DateTime expectedLocalUpdatedAt,
@@ -392,7 +366,6 @@ class TransactionRepository {
 
 DateTime _fromMs(int ms) => DateTime.fromMillisecondsSinceEpoch(ms);
 
-/// "25" -> 2500, "25.5" -> 2550. Null if the text is not a number.
 int? _searchAmountMinor(String s) {
   final v = double.tryParse(s.replaceAll(',', ''));
   return v == null ? null : (v * 100).round();

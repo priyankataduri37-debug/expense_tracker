@@ -16,9 +16,9 @@ class BackupService {
 
   static const int currentVersion = 1;
 
-  // ---------------------------------------------------------------------------
-  // CREATE BACKUP
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<String> createBackup() async {
     final uid = _userId();
@@ -31,9 +31,9 @@ class BackupService {
       _db.accounts,
     )..where((a) => a.userId.equals(uid) & a.deletedAt.isNull())).get();
 
-    // IMPORTANT:
-    // Default categories remain owned by "local".
-    // Only custom categories belong to the signed-in user.
+
+
+
     final categories =
         await (_db.select(_db.categories)..where(
               (c) =>
@@ -71,9 +71,9 @@ class BackupService {
     return const JsonEncoder.withIndent('  ').convert(data);
   }
 
-  // ---------------------------------------------------------------------------
-  // EXPORT BACKUP TO FILE
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<String?> exportBackup() async {
     final jsonString = await createBackup();
@@ -95,9 +95,9 @@ class BackupService {
     return result?.toString();
   }
 
-  // ---------------------------------------------------------------------------
-  // PICK AND RESTORE
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<BackupRestoreResult> pickAndRestore() async {
     final file = await FilePicker.pickFile(
@@ -115,9 +115,9 @@ class BackupService {
     return restoreFromJson(jsonString);
   }
 
-  // ---------------------------------------------------------------------------
-  // RESTORE JSON
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<BackupRestoreResult> restoreFromJson(String jsonString) async {
     final data = _validateBackup(jsonString);
@@ -143,11 +143,11 @@ class BackupService {
         .cast<Map<String, dynamic>>();
 
     await _db.transaction(() async {
-      // -----------------------------------------------------------------------
-      // Remove existing user-owned data.
-      //
-      // Default categories are NOT deleted because they belong to "local".
-      // -----------------------------------------------------------------------
+
+
+
+
+
 
       await (_db.delete(
         _db.transactions,
@@ -167,12 +167,12 @@ class BackupService {
         _db.recurringRules,
       )..where((r) => r.userId.equals(uid))).go();
 
-      // -----------------------------------------------------------------------
-      // Restore transactions.
-      //
-      // Transactions are the only data currently participating in cloud sync,
-      // therefore they are restored as pendingCreate.
-      // -----------------------------------------------------------------------
+
+
+
+
+
+
 
       for (final row in transactions) {
         await _db
@@ -196,11 +196,11 @@ class BackupService {
             );
       }
 
-      // -----------------------------------------------------------------------
-      // Restore accounts.
-      //
-      // Accounts are currently local-only, so they are marked synced.
-      // -----------------------------------------------------------------------
+
+
+
+
+
 
       for (final row in accounts) {
         await _db
@@ -223,9 +223,9 @@ class BackupService {
             );
       }
 
-      // -----------------------------------------------------------------------
-      // Restore custom categories only.
-      // -----------------------------------------------------------------------
+
+
+
 
       for (final row in categories) {
         await _db
@@ -247,9 +247,9 @@ class BackupService {
             );
       }
 
-      // -----------------------------------------------------------------------
-      // Restore budgets.
-      // -----------------------------------------------------------------------
+
+
+
 
       for (final row in budgets) {
         await _db
@@ -267,9 +267,9 @@ class BackupService {
             );
       }
 
-      // -----------------------------------------------------------------------
-      // Restore goals.
-      // -----------------------------------------------------------------------
+
+
+
 
       for (final row in goals) {
         await _db
@@ -290,9 +290,9 @@ class BackupService {
             );
       }
 
-      // -----------------------------------------------------------------------
-      // Restore recurring rules.
-      // -----------------------------------------------------------------------
+
+
+
 
       for (final row in recurringRules) {
         await _db
@@ -324,8 +324,8 @@ class BackupService {
       }
     });
 
-    // The old cloud bookmark is no longer valid after replacing
-    // local transaction data.
+
+
     await _syncMeta.clear(uid);
 
     return BackupRestoreResult.success(
@@ -338,9 +338,9 @@ class BackupService {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // BACKUP VALIDATION
-  // ---------------------------------------------------------------------------
+
+
+
 
   Map<String, dynamic> _validateBackup(String jsonString) {
     dynamic decoded;
@@ -385,9 +385,9 @@ class BackupService {
     return decoded;
   }
 
-  // ---------------------------------------------------------------------------
-  // JSON SERIALIZATION
-  // ---------------------------------------------------------------------------
+
+
+
 
   Map<String, dynamic> _transactionToJson(TransactionRow row) => {
     'id': row.id,
@@ -462,9 +462,9 @@ class BackupService {
     'note': row.note,
   };
 
-  // ---------------------------------------------------------------------------
-  // HELPERS
-  // ---------------------------------------------------------------------------
+
+
+
 
   String _requiredString(Map<String, dynamic> row, String key) {
     final value = row[key];
@@ -571,9 +571,9 @@ class BackupService {
   }
 }
 
-// -----------------------------------------------------------------------------
-// RESTORE RESULT
-// -----------------------------------------------------------------------------
+
+
+
 
 class BackupRestoreResult {
   const BackupRestoreResult._({

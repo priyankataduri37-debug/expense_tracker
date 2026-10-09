@@ -26,8 +26,6 @@ Future<String> _dbKey() async {
   return key;
 }
 
-/// A plain (unencrypted) SQLite file always starts with these 16 bytes.
-/// An encrypted file looks like random data, so it never matches.
 bool isPlaintextSqliteFile(File file) {
   if (!file.existsSync() || file.lengthSync() < 16) return false;
 
@@ -48,16 +46,13 @@ QueryExecutor openConnection() {
 
     final key = await _dbKey();
 
-    // A database created before encryption was added is plain, and opening
-    // it with a key fails with "file is not a database" (code 26).
-    // It has to be encrypted in place, once.
+
     final encryptExistingFile = isPlaintextSqliteFile(file);
 
     return NativeDatabase.createInBackground(
       file,
       setup: (rawDb) {
-        // A real check (not an assert), so a release build can never
-        // silently fall back to a plaintext database.
+
         final cipher = rawDb.select('PRAGMA cipher;');
         if (cipher.isEmpty) {
           throw StateError(
@@ -72,7 +67,6 @@ QueryExecutor openConnection() {
           rawDb.execute("PRAGMA key = '$key';");
         }
 
-        // Fails right here, with a clear error, if the key is wrong.
         rawDb.select('SELECT count(*) FROM sqlite_master;');
       },
     );

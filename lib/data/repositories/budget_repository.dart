@@ -16,18 +16,15 @@ class BudgetRepository {
   final DateTime Function() _clock;
   final _uuid = const Uuid();
 
-  // In SQL, "= NULL" never matches, so a null category needs isNull().
   Expression<bool> _forCategory($BudgetsTable b, String? categoryId) =>
       categoryId == null
       ? b.categoryId.isNull()
       : b.categoryId.equals(categoryId);
 
-  /// All active budgets of the current user (overall + per category).
   Stream<List<BudgetRow>> watchAll() => (_db.select(
     _db.budgets,
   )..where((b) => b.deletedAt.isNull() & b.userId.equals(_userId()))).watch();
 
-  /// Create or change a budget. [categoryId] null = the overall monthly budget.
   Future<void> set({String? categoryId, required int amountMinor}) async {
     if (amountMinor <= 0) throw ArgumentError('Budget must be positive');
     final now = _clock();
@@ -61,7 +58,6 @@ class BudgetRepository {
       }
 
       final row = found.first;
-      // Never uploaded -> still a create. Otherwise it is an update.
       final status = row.baseJson == null
           ? SyncStatus.pendingCreate
           : SyncStatus.pendingUpdate;
@@ -71,7 +67,7 @@ class BudgetRepository {
           amountMinor: Value(amountMinor),
           deletedAt: const Value<DateTime?>(
             null,
-          ), // also revives a removed budget
+          ),
           updatedAt: Value(now),
           syncStatus: Value(status),
         ),
@@ -79,7 +75,7 @@ class BudgetRepository {
     });
   }
 
-  /// Remove a budget (soft delete, same rule as transactions).
+
   Future<void> clear({String? categoryId}) {
     final now = _clock();
     return (_db.update(_db.budgets)..where(

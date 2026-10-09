@@ -86,7 +86,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Reporting period selector
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -120,7 +119,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       detail: 'Add a transaction to get started.',
                     )
                   else ...[
-                      // Smart insights, calculated from the user's real data
                       _InsightsCard(
                         insights: generateInsights(
                           expenses: provider.spendEntries,
@@ -132,7 +130,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Income and expense summary
                       Row(
                         children: [
                           Expanded(
@@ -156,7 +153,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Net savings and savings rate
                       Card(
                         child: Padding(
                           padding: const EdgeInsets.all(18),
@@ -214,7 +210,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Transaction count
                       Card(
                         child: ListTile(
                           leading: const Icon(Icons.receipt_long_outlined),

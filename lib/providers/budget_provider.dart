@@ -7,8 +7,7 @@ import '../data/local/database.dart';
 import '../data/repositories/budget_repository.dart';
 import '../data/repositories/transaction_repository.dart';
 
-/// Combines the saved budgets with this month's spending and exposes
-/// ready-made [BudgetStatus] objects, so widgets contain no budget logic.
+
 class BudgetProvider extends ChangeNotifier {
   BudgetProvider(this._budgets, this._transactions) {
     _budgetSub = _budgets.watchAll().listen((rows) {
@@ -39,21 +38,21 @@ class BudgetProvider extends ChangeNotifier {
   Map<String, BudgetStatus> _byCategory = {};
   int _totalSpentMinor = 0;
 
-  /// True until both streams have delivered their first value.
+
   bool get isLoading => !(_gotBudgets && _gotSpending);
   String? get error => _error;
 
-  /// Overall monthly budget status, or null if no overall budget is set.
+
   BudgetStatus? get overall => _overall;
 
-  /// Status per category id, only for categories that have a budget.
+
   Map<String, BudgetStatus> get byCategory => _byCategory;
 
-  /// Everything spent this month (all categories).
+
   int get totalSpentMinor => _totalSpentMinor;
 
-  /// The saved budget amount (minor units) for a category, or the overall
-  /// budget when [categoryId] is null. Null if none is set.
+
+
   int? budgetFor(String? categoryId) {
     for (final r in _rows) {
       if (r.categoryId == categoryId) return r.amountMinor;

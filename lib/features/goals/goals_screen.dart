@@ -10,7 +10,6 @@ import '../../providers/auth_provider.dart';
 import '../../providers/goal_provider.dart';
 import '../../providers/settings_provider.dart';
 
-/// Icons a goal can use. These keys exist in icon_map.dart.
 const _goalIconKeys = [
   'savings',
   'laptop',
@@ -245,7 +244,6 @@ class GoalsScreen extends StatelessWidget {
       BuildContext context,
       GoalRow goal,
       ) async {
-    // Capture dependencies before any asynchronous operation.
     final symbol = context.read<SettingsProvider>().currencySymbol;
     final accountRepository = context.read<AccountRepository>();
     final transferRepository = context.read<TransferRepository>();

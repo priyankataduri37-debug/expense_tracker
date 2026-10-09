@@ -11,6 +11,7 @@ import '../../services/csv_export_service.dart';
 import 'csv_export_filter_sheet.dart';
 import '../../services/local_data_reset_service.dart';
 import '../categories/categories_screen.dart';
+import 'package:expense_tracker/features/recurring/recurring_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -40,7 +41,6 @@ class SettingsScreen extends StatelessWidget {
 
     if (confirmed == true) {
       await auth.signOut();
-      // No navigation needed: AuthGate sees the status change and shows the login screen.
     }
   }
 
@@ -313,6 +313,19 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const GoalsScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.repeat),
+            title: const Text('Recurring transactions'),
+            subtitle: const Text('Automate regular income and expenses'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const RecurringScreen(),
+                ),
               );
             },
           ),

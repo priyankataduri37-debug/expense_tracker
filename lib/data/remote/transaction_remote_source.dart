@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// One cloud document plus the server time it last changed.
 class RemoteTransaction {
   const RemoteTransaction(this.data, this.serverMicros);
   final Map<String, dynamic> data;
   final int serverMicros;
 }
 
-/// The only class that talks to Firestore about transactions.
-/// Path: users/{uid}/transactions/{id}
 class TransactionRemoteSource {
   TransactionRemoteSource([FirebaseFirestore? firestore])
     : _fs = firestore ?? FirebaseFirestore.instance;
@@ -25,7 +22,6 @@ class TransactionRemoteSource {
     }, SetOptions(merge: true));
   }
 
-  /// Documents changed after [sinceMicros]. Null means download everything.
   Future<List<RemoteTransaction>> fetchChangedSince(
     String uid,
     int? sinceMicros,

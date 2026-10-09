@@ -5,7 +5,6 @@ class AuthService {
 
   final FirebaseAuth _auth;
 
-  /// Emits the user whenever someone logs in or out.
   Stream<User?> get authChanges => _auth.authStateChanges();
 
   User? get currentUser => _auth.currentUser;
@@ -18,7 +17,6 @@ class AuthService {
 
   Future<void> signOut() => _auth.signOut();
 
-  /// Turns Firebase error codes into messages a user can read.
   static String messageFor(FirebaseAuthException e) {
     switch (e.code) {
       case 'invalid-email':

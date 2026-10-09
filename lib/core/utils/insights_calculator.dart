@@ -2,7 +2,6 @@ import 'budget_calculator.dart';
 
 enum InsightKind { budget, weekChange, monthChange, topCategory, dailyAverage }
 
-/// Used by the UI to pick an icon and colour.
 enum InsightTone { good, info, warning }
 
 class Insight {
@@ -17,8 +16,6 @@ class Insight {
   final InsightTone tone;
 }
 
-/// The only data the calculator needs about one expense. Keeping it this
-/// small makes the function easy to test and free of database code.
 class SpendEntry {
   const SpendEntry({
     required this.categoryId,
@@ -36,7 +33,6 @@ const _monthNames = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-/// Sum of expenses with start <= occurredAt < end.
 int _sumBetween(List<SpendEntry> list, DateTime start, DateTime end) {
   var total = 0;
   for (final e in list) {
@@ -47,18 +43,13 @@ int _sumBetween(List<SpendEntry> list, DateTime start, DateTime end) {
   return total;
 }
 
-/// Rounded percent change from [before] to [after]. Null if [before] is 0,
-/// because a percentage of nothing is meaningless.
+
 int? _percentChange(int before, int after) {
   if (before <= 0) return null;
   return ((after - before) * 100 / before).round();
 }
 
-/// Builds the insight sentences from real spending data.
-///
-/// [expenses] must contain EXPENSE transactions only, and should cover at
-/// least from the start of last month up to [now].
-/// [overallBudget] is optional; pass it to get the budget insight.
+
 List<Insight> generateInsights({
   required List<SpendEntry> expenses,
   required DateTime now,
@@ -69,7 +60,6 @@ List<Insight> generateInsights({
   final insights = <Insight>[];
   final tomorrow = DateTime(now.year, now.month, now.day + 1);
 
-  // ---- Budget: reuses the tested budget calculator for the wording ----
   if (overallBudget != null) {
     final text = overallBudget.message(
       monthName: _monthNames[now.month - 1],
@@ -86,7 +76,6 @@ List<Insight> generateInsights({
     }
   }
 
-  // ---- This week vs last week (rolling 7 days, today included) ----
   final thisWeekStart = DateTime(now.year, now.month, now.day - 6);
   final lastWeekStart = DateTime(now.year, now.month, now.day - 13);
   final thisWeek = _sumBetween(expenses, thisWeekStart, tomorrow);
@@ -102,9 +91,7 @@ List<Insight> generateInsights({
     ));
   }
 
-  // ---- This month vs last month ----
-  // Compared over the SAME number of days, so on the 5th of the month we
-  // do not compare 5 days of spending with a whole month.
+
   final monthStart = DateTime(now.year, now.month);
   final nextMonthStart = DateTime(now.year, now.month + 1);
   final lastMonthStart = DateTime(now.year, now.month - 1);
@@ -129,7 +116,6 @@ List<Insight> generateInsights({
     ));
   }
 
-  // ---- Highest expense category this month ----
   final byCategory = <String, int>{};
   for (final e in expenses) {
     if (!e.occurredAt.isBefore(monthStart) &&
@@ -139,8 +125,7 @@ List<Insight> generateInsights({
     }
   }
   if (byCategory.isNotEmpty) {
-    // Highest amount wins; on a tie the smaller id wins, so the result
-    // never depends on list order.
+
     final top = byCategory.entries.reduce((a, b) {
       if (a.value != b.value) return a.value > b.value ? a : b;
       return a.key.compareTo(b.key) <= 0 ? a : b;
@@ -153,7 +138,6 @@ List<Insight> generateInsights({
     ));
   }
 
-  // ---- Average daily spending this month (days elapsed so far) ----
   if (thisMonthSoFar > 0) {
     insights.add(Insight(
       kind: InsightKind.dailyAverage,

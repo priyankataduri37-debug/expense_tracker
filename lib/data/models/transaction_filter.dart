@@ -2,7 +2,6 @@ import '../local/enums.dart';
 
 const _unset = Object();
 
-/// Every field is optional, and they combine (Expense + Food + This Month).
 class TransactionFilter {
   const TransactionFilter({
     this.type,
@@ -19,7 +18,6 @@ class TransactionFilter {
   final String? categoryId;
   final String? accountId;
 
-  /// Start is inclusive, end is exclusive. For "Oct 1 to Oct 31" pass Nov 1 as [to].
   final DateTime? from;
   final DateTime? to;
   final int? minMinor;
@@ -38,7 +36,6 @@ class TransactionFilter {
       maxMinor != null ||
       (search?.trim().isNotEmpty ?? false);
 
-  /// Leave a field out to keep it. Pass null to clear it.
   TransactionFilter copyWith({
     Object? type = _unset,
     Object? categoryId = _unset,

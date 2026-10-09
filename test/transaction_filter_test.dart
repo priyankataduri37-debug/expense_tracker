@@ -71,7 +71,7 @@ void main() {
     expect(
       (await run(const TransactionFilter(search: '10'))).single.note,
       'Bus',
-    ); // 10 -> 1000 minor units
+    );
     final byCategory = await run(const TransactionFilter(search: 'food'));
     expect(byCategory.map((r) => r.note).toSet(), {'Lunch', 'Old'});
   });

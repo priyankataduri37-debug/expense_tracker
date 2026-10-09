@@ -60,7 +60,7 @@ void main() {
 
     await repo.set(amountMinor: 300000);
     expect(await active(), hasLength(1));
-    expect(await db.select(db.budgets).get(), hasLength(1)); // no duplicate
+    expect(await db.select(db.budgets).get(), hasLength(1));
   });
 
   test('budgets are private to each user', () async {

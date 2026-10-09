@@ -29,14 +29,14 @@ void main() {
     final repo = TransactionRepository(
       db,
       userId: () => 'u1',
-      clock: () => DateTime(2026, 7, 15), // fixed "today"
+      clock: () => DateTime(2026, 7, 15),
     );
 
     Future<void> addExpense(String cat, int minor, DateTime when) => repo.add(
       amountMinor: minor,
       type: TxType.expense,
       categoryId: cat,
-      accountId: 'acc_cash', // seeded, don't insert it again
+      accountId: 'acc_cash',
       occurredAt: when,
     );
 
@@ -47,7 +47,7 @@ void main() {
       'exp_food',
       700,
       DateTime(2026, 6, 30),
-    ); // last month: ignored
+    );
 
     final result = await repo.watchMonthlyExpenseByCategory().first;
 
