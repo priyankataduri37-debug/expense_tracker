@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/utils/icon_map.dart';
-import '../../core/utils/money.dart';
+import '../../core/utils/money_context.dart';
 import '../../data/local/database.dart';
 import '../../data/local/enums.dart';
 import '../../providers/account_provider.dart';
 import '../../providers/category_provider.dart';
 
-/// One transaction row: icon, category, note, account, date, amount.
 class TransactionTile extends StatelessWidget {
   const TransactionTile({super.key, required this.tx});
 
@@ -39,7 +38,7 @@ class TransactionTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            '${isIncome ? '+' : '-'}${formatMinor(tx.amountMinor)}',
+            '${isIncome ? '+' : '-'}${context.money(tx.amountMinor)}',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: isIncome ? Colors.green : scheme.error,

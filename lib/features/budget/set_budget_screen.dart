@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/utils/money.dart';
+import '../../core/utils/money_context.dart';
+import '../../providers/settings_provider.dart';
 import '../../providers/budget_provider.dart';
 import '../../providers/category_provider.dart';
 
@@ -72,8 +73,8 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
       if (!mounted) return;
 
       final message = widget.categoryId == null
-          ? 'Monthly budget cleared.'
-          : 'Budget cleared.';
+          ? 'Monthly budget created.'
+          : 'Budget created.';
 
       ScaffoldMessenger.of(
         context,
@@ -164,6 +165,7 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
     final budgetProvider = context.watch<BudgetProvider>();
 
     final existingBudget = budgetProvider.budgetFor(widget.categoryId);
+    final symbol = context.watch<SettingsProvider>().currencySymbol;
 
     return Scaffold(
       appBar: AppBar(
@@ -192,9 +194,9 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Budget amount',
-                prefixText: '₹ ',
+                prefixText: '$symbol ',
                 border: OutlineInputBorder(),
                 hintText: '5000.00',
               ),
@@ -230,7 +232,7 @@ class _SetBudgetScreenState extends State<SetBudgetScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.account_balance_wallet_outlined),
                   title: const Text('Current budget'),
-                  subtitle: Text(formatMinor(existingBudget)),
+                  subtitle: Text(context.money(existingBudget)),
                 ),
               ),
 

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../transactions/add_transaction_sheet.dart';
 import '../transactions/transactions_screen.dart';
+import '../analytics/analytics_screen.dart';
 
-/// Bottom navigation: Dashboard | Analytics | (+) | Transactions | Settings
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
@@ -18,7 +18,7 @@ class _AppShellState extends State<AppShell> {
 
   static const _screens = <Widget>[
     DashboardScreen(),
-    _ComingSoon(title: 'Analytics'),
+    AnalyticsScreen(),
     TransactionsScreen(),
     SettingsScreen(),
   ];
@@ -82,16 +82,4 @@ class _AppShellState extends State<AppShell> {
       ),
     );
   }
-}
-
-class _ComingSoon extends StatelessWidget {
-  const _ComingSoon({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(title)),
-    body: const Center(child: Text('Coming soon')),
-  );
 }

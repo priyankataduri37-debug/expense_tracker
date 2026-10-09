@@ -11,7 +11,6 @@ import '../../providers/transaction_provider.dart';
 Future<void> showAddTransactionSheet(BuildContext context) =>
     showTransactionSheet(context);
 
-/// Opens the form. Pass [existing] to edit a transaction instead of adding.
 Future<void> showTransactionSheet(
   BuildContext context, {
   TransactionRow? existing,
@@ -41,7 +40,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
   TxType _type = TxType.expense;
   String? _categoryId;
   String? _accountId;
-  DateTime _date = DateTime.now(); // defaults to today
+  DateTime _date = DateTime.now();
   TimeOfDay _time = TimeOfDay.now();
   String? _error;
   bool _saving = false;
@@ -70,7 +69,6 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
     super.dispose();
   }
 
-  /// "25.50" -> 2550. Returns null if empty, invalid or not positive.
   int? _parseMinor(String text) {
     final value = double.tryParse(text.trim().replaceAll(',', '.'));
     if (value == null || value <= 0) return null;
@@ -192,7 +190,7 @@ class _AddTransactionSheetState extends State<AddTransactionSheet> {
               selected: {_type},
               onSelectionChanged: (s) => setState(() {
                 _type = s.first;
-                _categoryId = null; // categories differ per type
+                _categoryId = null;
               }),
             ),
             const SizedBox(height: 16),

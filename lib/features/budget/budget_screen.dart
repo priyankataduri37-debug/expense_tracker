@@ -2,7 +2,7 @@ import 'package:expense_tracker/core/utils/budget_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/utils/money.dart';
+import '../../core/utils/money_context.dart';
 import '../../data/local/enums.dart';
 import '../../providers/budget_provider.dart';
 import '../../providers/category_provider.dart';
@@ -106,8 +106,8 @@ class _OverallBudgetCard extends StatelessWidget {
               const Text('No monthly budget set.')
             else ...[
               Text(
-                '${formatMinor(status.spentMinor)} / '
-                '${formatMinor(status.budgetMinor)}',
+                '${context.money(status.spentMinor)} / '
+                '${context.money(status.budgetMinor)}',
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -125,8 +125,8 @@ class _OverallBudgetCard extends StatelessWidget {
 
               Text(
                 status.spentMinor > status.budgetMinor
-                    ? 'Over by ${formatMinor(status.overByMinor)}'
-                    : '${formatMinor(status.remainingMinor)} remaining',
+                    ? 'Over by ${context.money(status.overByMinor)}'
+                    : '${context.money(status.remainingMinor)} remaining',
               ),
 
               finalMessage(context, status),
@@ -140,7 +140,7 @@ class _OverallBudgetCard extends StatelessWidget {
   Widget finalMessage(BuildContext context, BudgetStatus status) {
     final message = status.message(
       monthName: _currentMonthName(),
-      formatMoney: formatMinor,
+      formatMoney: context.money,
     );
 
     if (message == null) {
@@ -216,8 +216,8 @@ class _CategoryBudgetCard extends StatelessWidget {
                     const Text('No budget set')
                   else ...[
                     Text(
-                      '${formatMinor(status.spentMinor)} / '
-                      '${formatMinor(status.budgetMinor)}',
+                      '${context.money(status.spentMinor)} / '
+                      '${context.money(status.budgetMinor)}',
                     ),
 
                     const SizedBox(height: 8),
@@ -238,8 +238,8 @@ class _CategoryBudgetCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             status.spentMinor > status.budgetMinor
-                                ? 'Over by ${formatMinor(status.overByMinor)}'
-                                : '${formatMinor(status.remainingMinor)} remaining',
+                                ? 'Over by ${context.money(status.overByMinor)}'
+                                : '${context.money(status.remainingMinor)} remaining',
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: statusColor,
                               fontWeight: FontWeight.w600,

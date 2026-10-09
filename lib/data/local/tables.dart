@@ -1,18 +1,14 @@
 import 'package:drift/drift.dart';
 import 'enums.dart';
 
-/// Columns shared by every table that syncs to the cloud.
 mixin SyncColumns on Table {
-  TextColumn get id => text()(); // UUID, generated on the device
+  TextColumn get id => text()();
   TextColumn get userId => text()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
-  DateTimeColumn get deletedAt => dateTime().nullable()(); // soft delete
+  DateTimeColumn get deletedAt => dateTime().nullable()();
   TextColumn get syncStatus => textEnum<SyncStatus>()();
 
-  /// JSON snapshot of this row as it was at the last successful sync.
-  /// The sync engine compares it with the current row (and with the cloud
-  /// row) to find which fields changed on which side -> field-level merge.
   TextColumn get baseJson => text().nullable()();
 
   @override
@@ -32,7 +28,6 @@ class Transactions extends Table with SyncColumns {
   TextColumn get note => text().withDefault(const Constant(''))();
   DateTimeColumn get occurredAt => dateTime()();
   TextColumn get attachmentPath => text().nullable()();
-  // Set when a recurring rule generated this transaction.
   TextColumn get recurringRuleId => text().nullable()();
 }
 
@@ -40,7 +35,6 @@ class Transactions extends Table with SyncColumns {
 class Accounts extends Table with SyncColumns {
   TextColumn get name => text()();
   TextColumn get type => textEnum<AccountType>()();
-  // Each account can have its own currency (multi-currency stretch goal).
   TextColumn get currencyCode => text().withDefault(const Constant('INR'))();
   IntColumn get openingBalanceMinor =>
       integer().withDefault(const Constant(0))();
@@ -51,15 +45,12 @@ class Accounts extends Table with SyncColumns {
 class Categories extends Table with SyncColumns {
   TextColumn get name => text()();
   TextColumn get type => textEnum<TxType>()();
-  TextColumn get iconKey => text()(); // maps to an Icon in the UI
+  TextColumn get iconKey => text()();
   IntColumn get colorValue => integer().nullable()();
   BoolColumn get isCustom => boolean().withDefault(const Constant(false))();
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
 }
 
-/// One table for both budget kinds:
-/// categoryId == null -> overall monthly budget
-/// categoryId != null -> budget for that category
 @DataClassName('BudgetRow')
 class Budgets extends Table with SyncColumns {
   TextColumn get categoryId => text().nullable()();
@@ -77,7 +68,7 @@ class Goals extends Table with SyncColumns {
 
 @DataClassName('RecurringRuleRow')
 class RecurringRules extends Table with SyncColumns {
-  TextColumn get title => text()(); // "Netflix", "Rent"
+  TextColumn get title => text()();
   IntColumn get amountMinor => integer()();
   TextColumn get type => textEnum<TxType>()();
   TextColumn get categoryId => text()();
@@ -90,7 +81,6 @@ class RecurringRules extends Table with SyncColumns {
   TextColumn get note => text().withDefault(const Constant(''))();
 }
 
-/// Local-only key/value store (never synced), e.g. key 'lastSyncAt'.
 @DataClassName('SyncMetaRow')
 class SyncMeta extends Table {
   TextColumn get key => text()();
@@ -98,4 +88,14 @@ class SyncMeta extends Table {
 
   @override
   Set<Column> get primaryKey => {key};
+}
+
+@DataClassName('TransferRow')
+class Transfers extends Table with SyncColumns {
+  TextColumn get fromAccountId => text()();
+  TextColumn get toAccountId => text()();
+  IntColumn get amountMinor => integer()();
+  DateTimeColumn get transferredAt => dateTime()();
+  TextColumn get note => text().withDefault(const Constant(''))();
+  TextColumn get goalId => text().nullable()();
 }

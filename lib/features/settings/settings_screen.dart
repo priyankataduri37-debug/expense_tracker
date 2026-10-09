@@ -1,3 +1,4 @@
+import 'package:expense_tracker/features/goals/goals_screen.dart';
 import 'package:expense_tracker/features/shared/sync_status_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ import 'package:expense_tracker/services/backup_service.dart';
 import '../../services/csv_export_service.dart';
 import 'csv_export_filter_sheet.dart';
 import '../../services/local_data_reset_service.dart';
+import '../categories/categories_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -137,12 +139,10 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _exportCsv(BuildContext context) async {
     try {
-      // First ask the user which transactions to export.
       final filter = await showCsvExportFilterSheet(context);
 
       if (!context.mounted) return;
 
-      // User closed the filter sheet without exporting.
       if (filter == null) return;
 
       final result = await context.read<CsvExportService>().exportTransactions(
@@ -302,6 +302,30 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.savings_outlined),
+            title: const Text('Savings goals'),
+            subtitle: const Text('Track progress toward your targets'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const GoalsScreen()),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.category_outlined),
+            title: const Text('Custom categories'),
+            subtitle: const Text('Create and manage income and expense categories'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const CategoriesScreen(),
+                ),
               );
             },
           ),

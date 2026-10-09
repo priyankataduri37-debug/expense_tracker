@@ -1,9 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expense_tracker/data/repositories/analytics_repository.dart';
+import 'package:expense_tracker/data/repositories/goal_repository.dart';
+import 'package:expense_tracker/data/repositories/transfer_repository.dart';
+import 'package:expense_tracker/features/analytics/analytics_provider.dart';
 import 'package:expense_tracker/providers/settings_provider.dart';
 import 'package:expense_tracker/services/local_data_reset_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'providers/goal_provider.dart';
 
 import 'services/csv_export_service.dart';
 import 'data/repositories/budget_repository.dart';
@@ -39,10 +44,11 @@ Future<void> main() async {
 
   final db = AppDatabase(openConnection());
 
-  // Created before the repository so the repository can ask it for the user id.
   final authProvider = AuthProvider(AuthService());
 
   final repo = TransactionRepository(db, userId: () => authProvider.userId);
+
+  final accountRepo = AccountRepository(db);
 
   final budgetRepo = BudgetRepository(db, userId: () => authProvider.userId);
 
@@ -76,8 +82,8 @@ Future<void> main() async {
     }
   }
 
-  authProvider.addListener(claimIfSignedIn); // runs when someone logs in
-  claimIfSignedIn(); // runs at startup if already logged in
+  authProvider.addListener(claimIfSignedIn);
+  claimIfSignedIn();
 
   runApp(
     MultiProvider(
@@ -89,13 +95,24 @@ Future<void> main() async {
         Provider<BackupService>.value(value: backupService),
         Provider<CsvExportService>.value(value: csvExportService),
         Provider<LocalDataResetService>.value(value: localDataResetService),
+        Provider<AccountRepository>.value(value: accountRepo),
+        Provider<AnalyticsRepository>(
+          create: (_) =>
+              AnalyticsRepository(db, userId: () => authProvider.userId),
+        ),
+        Provider<GoalRepository>(
+          create: (_) => GoalRepository(db, userId: () => authProvider.userId),
+        ),
+        Provider<TransferRepository>(
+          create: (context) => TransferRepository(
+            context.read<AppDatabase>(),
+          ),
+        ),
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider(
           create: (_) => CategoryProvider(CategoryRepository(db)),
         ),
-        ChangeNotifierProvider(
-          create: (_) => AccountProvider(AccountRepository(db)),
-        ),
+        ChangeNotifierProvider(create: (_) => AccountProvider(accountRepo)),
         ChangeNotifierProvider(create: (_) => SettingsProvider()..load()),
       ],
       child: const MyApp(),
@@ -108,13 +125,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // When the user changes, the key changes, and Flutter throws away the old
-    // providers and builds new ones that query for the new user.
     final uid = context.select<AuthProvider, String>((a) => a.userId);
 
     return MultiProvider(
       key: ValueKey(uid),
       providers: [
+        ChangeNotifierProvider<GoalProvider>(
+          create: (ctx) => GoalProvider(ctx.read<GoalRepository>()),
+        ),
+        ChangeNotifierProvider<AnalyticsProvider>(
+          create: (ctx) => AnalyticsProvider(ctx.read<AnalyticsRepository>()),
+        ),
         ChangeNotifierProvider(
           create: (ctx) =>
               TransactionProvider(ctx.read<TransactionRepository>()),

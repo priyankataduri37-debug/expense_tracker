@@ -14,13 +14,14 @@ part 'database.g.dart';
     Goals,
     RecurringRules,
     SyncMeta,
+    Transfers,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -29,13 +30,12 @@ class AppDatabase extends _$AppDatabase {
       await _seedDefaults();
     },
     onUpgrade: (m, from, to) async {
-      // Future versions: if (from < 2) { await m.addColumn(...); }
+      if (from < 2) {
+        await m.createTable(transfers);
+      }
     },
   );
 
-  /// Built-in categories use fixed ids so every device agrees on them.
-  /// They are marked `synced` because they are never uploaded; only
-  /// custom categories (isCustom = true) go to the cloud.
   Future<void> _seedDefaults() async {
     final now = DateTime.now();
 
@@ -76,7 +76,6 @@ class AppDatabase extends _$AppDatabase {
         cat('inc_other', 'Other', TxType.income, 'category'),
       ]);
 
-      // A default account so the first transaction has somewhere to go.
       b.insert(
         accounts,
         AccountsCompanion.insert(

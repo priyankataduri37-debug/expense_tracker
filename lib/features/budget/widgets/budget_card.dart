@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/budget_provider.dart';
 import '../../../core/utils/budget_calculator.dart';
+import '../../../core/utils/money_context.dart';
 
 class BudgetCard extends StatelessWidget {
   const BudgetCard({
@@ -14,17 +15,9 @@ class BudgetCard extends StatelessWidget {
 
   final VoidCallback onSetBudget;
 
-  /// Optional so the dashboard can later provide its own month formatter.
   final String? monthName;
 
-  /// Optional money formatter.
-  ///
-  /// If omitted, the widget uses a simple INR formatter.
   final String Function(int minor)? formatMoney;
-
-  String _defaultFormatMoney(int minor) {
-    return '₹${(minor / 100).toStringAsFixed(2)}';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +49,6 @@ class BudgetCard extends StatelessWidget {
 
     final budget = provider.overall;
 
-    // No overall budget configured.
     if (budget == null) {
       return Card(
         child: Padding(
@@ -92,7 +84,7 @@ class BudgetCard extends StatelessWidget {
 
     final status = provider.overall!;
 
-    final money = formatMoney ?? _defaultFormatMoney;
+    final money = formatMoney ?? context.money;
 
     final month = monthName ?? _currentMonthName();
 

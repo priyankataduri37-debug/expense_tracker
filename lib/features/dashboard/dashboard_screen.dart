@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../budget/widgets/budget_card.dart';
-import '../../core/utils/money.dart';
+import '../../core/utils/money_context.dart';
 import '../../providers/dashboard_provider.dart';
 import '../transactions/transaction_tile.dart';
 import '../shared/sync_status_chip.dart';
 import '../budget/budget_screen.dart';
+import '../accounts/accounts_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -40,7 +41,7 @@ class DashboardScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          formatMinor(d.balanceMinor),
+                          context.money(d.balanceMinor),
                           style: theme.textTheme.headlineLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -55,7 +56,7 @@ class DashboardScreen extends StatelessWidget {
                     Expanded(
                       child: _StatCard(
                         label: 'Income',
-                        amount: formatMinor(d.incomeMinor),
+                        amount: context.money(d.incomeMinor),
                         icon: Icons.arrow_downward,
                         color: Colors.green,
                       ),
@@ -64,7 +65,7 @@ class DashboardScreen extends StatelessWidget {
                     Expanded(
                       child: _StatCard(
                         label: 'Expenses',
-                        amount: formatMinor(d.expenseMinor),
+                        amount: context.money(d.expenseMinor),
                         icon: Icons.arrow_upward,
                         color: theme.colorScheme.error,
                       ),
@@ -80,6 +81,25 @@ class DashboardScreen extends StatelessWidget {
                       MaterialPageRoute(builder: (_) => const BudgetScreen()),
                     );
                   },
+                ),
+
+                const SizedBox(height: 16),
+                Card(
+                  child: ListTile(
+                    leading: const CircleAvatar(
+                      child: Icon(Icons.account_balance_wallet_outlined),
+                    ),
+                    title: const Text('Manage accounts'),
+                    subtitle: const Text('View balances and add accounts'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AccountsScreen(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
 
                 const SizedBox(height: 24),

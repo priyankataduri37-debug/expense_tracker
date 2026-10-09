@@ -21,11 +21,33 @@ class CategoryProvider extends ChangeNotifier {
   List<CategoryRow> _all = [];
   Map<String, CategoryRow> _byId = {};
 
-  /// Active (not archived) categories of one type, for pickers.
   List<CategoryRow> forType(TxType type) =>
       _all.where((c) => c.type == type && !c.isArchived).toList();
 
+  List<CategoryRow> get customCategories =>
+      _all.where((c) => c.isCustom && !c.isArchived).toList();
+
   CategoryRow? byId(String id) => _byId[id];
+
+  Future<void> createCustomCategory({
+    required String userId,
+    required String name,
+    required TxType type,
+    required String iconKey,
+    required int colorValue,
+  }) {
+    return _repo.createCustomCategory(
+      userId: userId,
+      name: name,
+      type: type,
+      iconKey: iconKey,
+      colorValue: colorValue,
+    );
+  }
+
+  Future<void> archiveCategory(String id) {
+    return _repo.archiveCategory(id);
+  }
 
   @override
   void dispose() {
